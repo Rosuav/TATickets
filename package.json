@@ -1,0 +1,16 @@
+{
+  "name": "TATickets",
+  "version": "1.0.0",
+  "description": "Ticket system for Thinkful TAing",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+  }
+  "name": "vampaynani",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
+}
