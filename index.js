@@ -60,7 +60,7 @@ app.post('/support', (req, res, next) => {
           text: `${ticket.owlSession} removed from the queue`
         });
       }else{
-        return next(`No ticket available to cancel`);
+        next(`No ticket available to cancel`);
       }
     });
     return;
@@ -71,24 +71,24 @@ app.post('/support', (req, res, next) => {
   Ticket.findOne({ owlSession: session, channelId: channel_id, mentor: null, created_at: { $gte: today.toDate() }})
   .then(ticket => {
     if(ticket){
-      return next(`The session url has been already pushed to the queue, a mentor will reach you out soon`);
+      return Promise.reject(`The session url has been already pushed to the queue, a mentor will reach you out soon`);
     }else{
-      Ticket.create({
+      return Ticket.create({
         owlSession: session,
         by: user_name,
         channelId: channel_id
-      })
-      .then(ticket => {
-        res.status(200).json({
-          response_type: "ephemeral",
-          text: `Request successfully pushed to the queue`
-        });
-        axios.post(response_url, {
-          response_type: "in_channel",
-          text: `Mentor required in ${session} by <@${user_name}>`
-        });
       });
     }
+  })
+  .then(ticket => {
+    res.status(200).json({
+      response_type: "ephemeral",
+      text: `Request successfully pushed to the queue`
+    });
+    axios.post(response_url, {
+      response_type: "in_channel",
+      text: `Mentor required in ${session} by <@${user_name}>`
+    });
   })
   .catch(err => next(err));
 });
@@ -106,12 +106,12 @@ app.post('/next', (req, res, next) => {
     created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() } 
   })
   .then(ticket => {
-    if(!ticket) return next(`No sessions in queue`);
+    if(!ticket) return Promise.reject(`No sessions in queue`);
     _ticket = ticket;
     return Mentor.findOne({ slackUsername: user_name });
   })
   .then(mentor => {
-    if(!mentor) return next('Only registered mentors could call next');
+    if(!mentor) return Promise.reject('Only registered mentors could call next');
     _ticket.mentor = mentor;
     _ticket.attended_at = Date.now();
     _ticket.save();
@@ -123,7 +123,8 @@ app.post('/next', (req, res, next) => {
       response_type: "in_channel",
       text: `<@${user_name}> incoming <@${_ticket.by}>`
     });
-  });
+  })
+  .catch(err => next(err));
 });
 
 app.post('/reviews', (req, res, next) => {
@@ -153,7 +154,7 @@ app.post('/reviews', (req, res, next) => {
       });
     } else if(text !== ""){
       const params = text.split(' ');
-      if(params.length < 3) return next('Invalid feedback params');
+      if(params.length < 3) return Promise.reject('Invalid feedback params');
       const id = params[0];
       const colors = params[1];
       const review = params.slice(2, params.length).join(' ');
@@ -161,7 +162,7 @@ app.post('/reviews', (req, res, next) => {
       return Ticket.findOne({ _id: id })
       .then(ticket => {
         if(!ticket){
-          return next('Invalid ticket ID');
+          return Promise.reject('Invalid ticket ID');
         }
         ticket.review = review;
         ticket.colors = colors.split("/").map(item => {
@@ -221,7 +222,7 @@ app.post('/queue', (req, res) => {
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
   if(!channel_id) {
-    return res.send(`A channel ID is required.`);
+    return next(`A channel ID is required.`);
   }
   Ticket.find({
     channelId: channel_id,
@@ -230,9 +231,10 @@ app.post('/queue', (req, res) => {
     isActive: true
    })
   .then(tickets => {
-    if(tickets.length <= 0) return res.send(`No sessions in queue`);
-    res.send(tickets.map((ticket, index) => `[${index + 1}] ${ticket.owlSession} reported by ${ticket.by}.\n`).join(''));
-  });
+    if(tickets.length <= 0) return Promise.reject(`No sessions in queue`);
+    res.send(tickets.map((ticket, index) => `[${index + 1}] ${ticket.owlSession} reported by <@${ticket.by}>.\n`).join(''));
+  })
+  .catch(err => next(err));
 });
 
 app.post('/summary', (req, res) => {
