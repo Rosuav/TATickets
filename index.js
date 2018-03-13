@@ -36,7 +36,7 @@ app.get('/mentors', (req, res, next) => {
 app.post('/support', (req, res, next) => {
   const {channel_id, user_name, response_url, text} = req.body;
   const sentences = text.split(' ');
-  const session = sentences.find(sentence => sentence.includes('sessions.thinkful.com'));
+  const session = sentences.find(sentence => sentence.includes('https://'));
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
   if(text === "cancel"){
@@ -66,9 +66,9 @@ app.post('/support', (req, res, next) => {
     return;
   }
   if(!session) {
-    return next(`You need to type a valid session url(https://sessions.thinkful.com/<room>) to be able to push it to the queue`);
+    return next(`You need to type a valid session url to be able to push it to the queue`);
   }
-  Ticket.findOne({ owlSession: session, channelId: channel_id, mentor: null })
+  Ticket.findOne({ owlSession: session, channelId: channel_id, mentor: null, created_at: { $gte: today.toDate() }})
   .then(ticket => {
     if(ticket){
       return next(`The session url has been already pushed to the queue, a mentor will reach you out soon`);
@@ -111,7 +111,7 @@ app.post('/next', (req, res, next) => {
     return Mentor.findOne({ slackUsername: user_name });
   })
   .then(mentor => {
-    if(!mentor) return next('Only valid mentors could call next');
+    if(!mentor) return next('Only registered mentors could call next');
     _ticket.mentor = mentor;
     _ticket.attended_at = Date.now();
     _ticket.save();
@@ -133,8 +133,8 @@ app.post('/reviews', (req, res, next) => {
   let _title;
   Mentor.findOne({ slackUsername: user_name })
   .then(mentor => {
-    title = 'Pending reviews';
     if(text === "pending"){
+      title = 'Pending reviews';
       return Ticket.find({
         channelId: channel_id,
         mentor,
@@ -151,7 +151,29 @@ app.post('/reviews', (req, res, next) => {
         reviewed_at: { $exists: true },
         isActive: true
       });
-    } else {
+    } else if(text !== ""){
+      const params = text.split(' ');
+      if(params.length < 3) return next('Invalid feedback params');
+      const id = params[0];
+      const colors = params[1];
+      const review = params.slice(2, params.length).join(' ');
+      
+      return Ticket.findOne({ _id: id })
+      .then(ticket => {
+        if(!ticket){
+          return next('Invalid ticket ID');
+        }
+        ticket.review = review;
+        ticket.colors = colors.split("/").map(item => {
+          const student = item.split(':')[0];
+          const color = item.split(':')[1];
+          return {student, color};
+        });
+        ticket.reviewed_at = Date.now();
+        ticket.save();
+        return ticket.owlSession;
+      });
+    }else {
       title = 'Today\'s reviews';
       return Ticket.find({
         channelId: channel_id,
@@ -162,40 +184,36 @@ app.post('/reviews', (req, res, next) => {
     }
   })
   .then(tickets => {
-    if(!tickets || tickets.length <= 0) return next('No reviews available');
-    return res.status(200).json({
-      response_type: "ephemeral",
-      text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.owlSession} - ${ticket.review}\n`).join('')}`
-    });
+    if(typeof tickets === "string"){
+      res.status(200).json({
+        response_type: "ephemeral",
+        text: `Feedback for ${tickets} submitted`
+      });
+    } else if(!tickets || tickets.length <= 0) {
+      next('No reviews available');
+    } else {
+      switch(text){
+        case "pending":
+          res.status(200).json({
+            response_type: "ephemeral",
+            text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.owlSession}`)}`
+          });
+        break;
+        case "completed":
+          res.status(200).json({
+            response_type: "ephemeral",
+            text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')}`
+          });     
+        break;
+        default:
+        res.status(200).json({
+          response_type: "ephemeral",
+          text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.owlSession} => ${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')}`
+        }); 
+      }    
+    }
   })
   .catch(err =>  next(err));
-});
-
-app.post('/feedback', (req, res, next) => {
-  const {channel_id, user_name, response_url, text} = req.body;
-  const params = text.split(' ');
-  if(params.length < 3) return next('Invalid feedback params');
-  const id = params[0];
-  const review = params.slice(1, params.length - 1).join(' ');
-  const colors = params[params.length - 1]
-  Mentor.findOne({ slackUsername: user_name })
-  .then(mentor => {
-    return Ticket.findOne({ _id: id });
-  })
-  .then(ticket => {
-    if(!ticket){
-      return next('No sessions pending of feedback');
-    }
-    ticket.review = review;
-    ticket.colors = colors.split('/');
-    ticket.reviewed_at = Date.now();
-    ticket.save();
-    res.status(200).json({
-      response_type: "ephemeral",
-      text: `Feedback for ${ticket.owlSession} submitted`
-    });
-  })
-  .catch(err => next(err));
 });
 
 app.post('/queue', (req, res) => {
@@ -224,7 +242,7 @@ app.post('/summary', (req, res) => {
   if(!text) {
     return res.send('A channel ID is required.');
   }
-  if(text === "help"){
+  if(text === "channel"){
     return res.send(`Channel ID: *${channel_id}*`);
   }
   if(channel_id === text){
@@ -241,8 +259,8 @@ app.post('/summary', (req, res) => {
   .then(tickets => {
     res.status(200).json({
       response_type: "in_channel",
-      text: tickets.map(ticket => `${ticket.owlSession.replace('https://sessions.thinkful.com/', '')}: ${ticket.review}. ${ticket.colors.join('/')}\n`).join('') 
-    });
+      text: tickets.map(ticket => `${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')
+    }); 
   })
 })
 

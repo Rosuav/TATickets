@@ -43,7 +43,10 @@ const ticketSchema = mongoose.Schema({
 		type: String
 	},
   colors: [
-    { type: String }
+    {
+      student: {type: String },
+      color: {type: String}
+    }
   ],
   created_at: {
     type: Date,
