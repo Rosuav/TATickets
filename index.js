@@ -197,7 +197,7 @@ app.post('/reviews', (req, res, next) => {
         case "pending":
           res.status(200).json({
             response_type: "ephemeral",
-            text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.owlSession}`)}`
+            text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.owlSession}\n`).join('')}`
           });
         break;
         case "completed":
@@ -217,7 +217,7 @@ app.post('/reviews', (req, res, next) => {
   .catch(err =>  next(err));
 });
 
-app.post('/queue', (req, res) => {
+app.post('/queue', (req, res, next) => {
   const { channel_id } = req.body;
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
