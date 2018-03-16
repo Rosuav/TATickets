@@ -105,6 +105,7 @@ app.post('/next', (req, res, next) => {
     isActive: true,
     created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() } 
   })
+  .sort({created_at: 1})
   .then(ticket => {
     if(!ticket) return Promise.reject(`No sessions in queue`);
     _ticket = ticket;
@@ -230,6 +231,7 @@ app.post('/queue', (req, res, next) => {
     created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() },
     isActive: true
    })
+   .sort({created_at: 1})
   .then(tickets => {
     if(tickets.length <= 0) return Promise.reject(`No sessions in queue`);
     res.send(tickets.map((ticket, index) => `[${index + 1}] ${ticket.owlSession} reported by <@${ticket.by}>.\n`).join(''));
