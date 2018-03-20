@@ -66,7 +66,8 @@ app.post('/support', (req, res, next) => {
     return;
   }
   if(!session) {
-    return next(`You need to type a valid session url to be able to push it to the queue`);
+    //return next(`You need to type a valid session url to be able to push it to the queue`);
+    session = `https://sessions.thinkful.com/${user_name}`
   }
   Ticket.findOne({ owlSession: session, channelId: channel_id, mentor: null, created_at: { $gte: today.toDate() }})
   .then(ticket => {
