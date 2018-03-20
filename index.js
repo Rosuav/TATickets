@@ -35,10 +35,10 @@ app.get('/mentors', (req, res, next) => {
 
 app.post('/support', (req, res, next) => {
   const {channel_id, user_name, response_url, text} = req.body;
-  const sentences = text.split(' ');
-  const session = sentences.find(sentence => sentence.includes('https://'));
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
+  const sentences = text ? text.split(' '):[];
+  let session = sentences.find(sentence => sentence.includes('https://'));
   if(text === "cancel"){
     Ticket.findOne({
       by: user_name,
