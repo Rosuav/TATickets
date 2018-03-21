@@ -244,17 +244,15 @@ app.post('/summary', (req, res) => {
   const { channel_id, text } = req.body;
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
-  if(!text) {
-    return res.send('A channel ID is required.');
-  }
+  
   if(text === "channel"){
     return res.send(`Channel ID: *${channel_id}*`);
   }
-  if(channel_id === text){
-    return res.send('The summary can not be posted in the same channel');
-  }
+  
+  let channelId = text ? text : channel_id;
+  
   Ticket.find({ 
-    channelId: text, 
+    channelId: channelId, 
     created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() }, 
     reviewed_at: { $exists: true },
     isActive: true
@@ -263,7 +261,7 @@ app.post('/summary', (req, res) => {
   .sort('created_at')
   .then(tickets => {
     res.status(200).json({
-      response_type: "in_channel",
+      response_type: "ephemeral",
       text: tickets.map(ticket => `${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')
     }); 
   })
