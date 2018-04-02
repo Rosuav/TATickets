@@ -37,8 +37,9 @@ app.post('/support', (req, res, next) => {
   const {channel_id, user_name, response_url, text} = req.body;
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
-  const sentences = text ? text.split(' '):[];
-  let session = sentences.find(sentence => sentence.includes('https://'));
+  const sentences = text ? text.split(' ') : [];
+  let session = sentences[0] && (sentences[0].includes('https://') || sentences[0].includes('http://')) ? sentences[0] : null;
+  let issue = sentences.slice(1).join(' ');
   if(text === "cancel"){
     Ticket.findOne({
       by: user_name,
@@ -69,12 +70,18 @@ app.post('/support', (req, res, next) => {
     //return next(`You need to type a valid session url to be able to push it to the queue`);
     session = `https://sessions.thinkful.com/${user_name}`
   }
-  Ticket.findOne({ owlSession: session, channelId: channel_id, mentor: null, created_at: { $gte: today.toDate() }})
+  Ticket.findOne({ 
+    owlSession: session, 
+    channelId: channel_id, 
+    mentor: null, 
+    created_at: { $gte: today.toDate() }
+  })
   .then(ticket => {
     if(ticket){
       return Promise.reject(`The session url has been already pushed to the queue, a mentor will reach you out soon`);
     }else{
       return Ticket.create({
+        issue,
         owlSession: session,
         by: user_name,
         channelId: channel_id
@@ -82,13 +89,15 @@ app.post('/support', (req, res, next) => {
     }
   })
   .then(ticket => {
+    const postIssue = issue ? `issued: ${issue[issue.length - 1] === "." ? issue : `${issue}.`} In ${session}` : `required a mentor in ${session}`;
+    
     res.status(200).json({
       response_type: "ephemeral",
       text: `Request successfully pushed to the queue`
     });
     axios.post(response_url, {
       response_type: "in_channel",
-      text: `Mentor required in ${session} by <@${user_name}>`
+      text: `<@${user_name}> ${postIssue}`
     });
   })
   .catch(err => next(err));
@@ -119,7 +128,21 @@ app.post('/next', (req, res, next) => {
     _ticket.save();
     res.status(200).json({
       response_type: "ephemeral",
-      text: `Next session room: ${_ticket.owlSession}`
+      attachments: [
+        {
+          fallback: `Ticket from <@${_ticket.by}> - ${_ticket.issue}`,
+          pretext: `Ticket from <@${_ticket.by}>`,
+          text: _ticket.issue,
+          fields: [
+            {
+              title: "Room",
+              value: _ticket.owlSession,
+              short: true
+            }
+          ]
+        }
+      ]
+      //text: `Next session room: ${_ticket.owlSession}`
     });
     axios.post(response_url, {
       response_type: "in_channel",

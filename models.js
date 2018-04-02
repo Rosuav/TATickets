@@ -27,6 +27,9 @@ const ticketSchema = mongoose.Schema({
     type: String, 
     required: true
   },
+  issue: {
+    type: String
+  },
   by: {
     type: String,
     required: true
