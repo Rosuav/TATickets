@@ -39,7 +39,7 @@ app.post('/support', (req, res, next) => {
   const tomorrow = moment(today).add(1, 'days');
   const sentences = text ? text.split(' ') : [];
   let session = sentences[0] && (sentences[0].includes('https://') || sentences[0].includes('http://')) ? sentences[0] : null;
-  let issue = sentences.slice(1).join(' ');
+  let issue = session ? sentences.slice(1).join(' ') : sentences.join(' ');
   if(text === "cancel"){
     Ticket.findOne({
       by: user_name,
