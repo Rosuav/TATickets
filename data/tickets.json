@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "5ac296e250c657008cffb5c8",
+    "isActive": true,
+    "issue": "testing /login endpoint but geting strange message error: \"User.findOne is not a function\" but I didn't use that promise in my code. https://hangouts.google.com/call/JOPSWpZmwanYvRV5bSgsAAEE",
+    "owlSession": "https://sessions.thinkful.com/test",
+    "by": "test",
+    "channelId": "G9AJF01BL",
+    "colors": [],
+    "created_at": "2018-04-02T20:47:30.447Z"
+  },
+  {
+    "_id": "5ac296c550c657008cffb5c7",
+    "isActive": true,
+    "issue": "looking for some guidance on how to start thinking through anagrams",
+    "owlSession": "https://sessions.thinkful.com/test1",
+    "by": "test1",
+    "channelId": "G9AJF01BL",
+    "colors": [],
+    "created_at": "2018-04-02T20:47:01.144Z"
+  },
+  {
+    "_id": "5ac2940250c657008cffb5c6",
+    "isActive": true,
+    "issue": "have a question about what we\u2019re actually supposed to be solving for the fibonacci sequence function. since the sequence itself is what it is\u2026. are we supposed to be figuring out what the nth number in the sequence is?",
+    "owlSession": "https://sessions.thinkful.com/test2",
+    "by": "test2",
+    "channelId": "G8RK1A9EG",
+    "colors": [],
+    "created_at": "2018-04-02T20:35:14.554Z",
+    "attended_at": "2018-04-02T20:47:11.048Z",
+    "mentor": "5ab1276a4eeea7108ddadcc1"
+  },
+  {
+    "_id": "5ac290e950c657008cffb5c4",
+    "isActive": true,
+    "issue": "We have a half baked solution, we expects to store all permutations in array or console.log all permutation at once but we only console.log one at a time.",
+    "owlSession": "https://sessions.thinkful.com/test3",
+    "by": "test3",
+    "channelId": "G8RK1A9EG",
+    "colors": [],
+    "created_at": "2018-04-02T20:22:01.747Z",
+    "attended_at": "2018-04-02T20:37:40.683Z",
+    "mentor": "5ab1276a4eeea7108ddadcc1"
+  }
+]

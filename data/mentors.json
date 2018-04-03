@@ -1,0 +1,52 @@
+[
+  {
+    "name": {
+      "firstName": "Mentor",
+      "lastName": "One"
+    },
+    "isActive": true,
+    "_id": "5a9f892c7d8f2783589dd1a6",
+    "email": "mentorone@mail.com",
+    "slackUsername": "mentor1"
+  },
+  {
+    "name": {
+      "firstName": "Mentor",
+      "lastName": "Two"
+    },
+    "isActive": true,
+    "_id": "5a9f89a37d8f2783589dd1a7",
+    "email": "mentortwo@mail.com",
+    "slackUsername": "mentor2"
+  },
+  {
+    "name": {
+      "firstName": "Mentor",
+      "lastName": "Three"
+    },
+    "isActive": true,
+    "_id": "5a9f89dc7d8f2783589dd1a8",
+    "email": "mentorthree@mail.com",
+    "slackUsername": "mentor3"
+  },
+  {
+    "name": {
+      "firstName": "Mentor",
+      "lastName": "Four"
+    },
+    "isActive": true,
+    "_id": "5a9f8a097d8f2783589dd1a9",
+    "email": "mentorfour@mail.com",
+    "slackUsername": "mentor4"
+  },
+  {
+    "name": {
+      "firstName": "Mentor",
+      "lastName": "Five"
+    },
+    "isActive": true,
+    "_id": "5a9f8a487d8f2783589dd1aa",
+    "email": "mentorfive@mail.com",
+    "slackUsername": "mentor5"
+  }
+]
