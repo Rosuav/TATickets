@@ -11,7 +11,8 @@ const mentorSchema = mongoose.Schema({
 	},
 	slackUsername: {
 		type: String,
-		required: true
+    required: true,
+    unique: true
 	},
 	isActive: {
 		type: Boolean,

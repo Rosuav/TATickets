@@ -11,6 +11,7 @@ const { Mentor, Ticket } = require('./models');
 
 app.use(morgan('common'));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 const tickets = {};
 
@@ -33,6 +34,11 @@ app.get('/mentors', (req, res, next) => {
   .catch(err => next(err));
 });
 
+app.post('/test', (req, res, next) => {
+  //console.log(req.body);
+  res.status(204).json();
+})
+
 app.post('/support', (req, res, next) => {
   const {channel_id, user_name, response_url, text} = req.body;
   const today = moment().startOf('day');
@@ -46,8 +52,7 @@ app.post('/support', (req, res, next) => {
       channelId: channel_id,
       mentor: null,
       isActive: true,
-      attended_at: { $exists: false },
-      created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() } 
+      attended_at: { $exists: false }
     })
     .then(ticket => {
       if(ticket){
@@ -107,46 +112,45 @@ app.post('/next', (req, res, next) => {
   const {channel_id, user_name, response_url} = req.body;
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
-  let _ticket;
+  let _mentor;
 
-  Ticket.findOne({ 
-    channelId: channel_id,
-    mentor: null,
-    isActive: true,
-    created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() } 
-  })
-  .sort({created_at: 1})
-  .then(ticket => {
-    if(!ticket) return Promise.reject(`No sessions in queue`);
-    _ticket = ticket;
-    return Mentor.findOne({ slackUsername: user_name });
-  })
+  Mentor.findOne({ slackUsername: user_name })
   .then(mentor => {
     if(!mentor) return Promise.reject('Only registered mentors could call next');
-    _ticket.mentor = mentor;
-    _ticket.attended_at = Date.now();
-    _ticket.save();
+    _mentor = mentor;
+    return Ticket.findOne({ 
+      channelId: channel_id,
+      mentor: null,
+      isActive: true,
+      created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() } 
+    })
+    .sort({created_at: 1})
+  })
+  .then(ticket => {
+    if(!ticket) return Promise.reject(`No sessions in queue`);
+    ticket.mentor = _mentor;
+    ticket.attended_at = Date.now();
+    ticket.save();
     res.status(200).json({
       response_type: "ephemeral",
       attachments: [
         {
-          fallback: `Ticket from <@${_ticket.by}> - ${_ticket.issue}`,
-          pretext: `Ticket from <@${_ticket.by}>`,
-          text: _ticket.issue,
+          fallback: `Ticket from <@${ticket.by}> - ${ticket.issue}`,
+          pretext: `Ticket from <@${ticket.by}>`,
+          text: ticket.issue,
           fields: [
             {
               title: "Room",
-              value: _ticket.owlSession,
+              value: ticket.owlSession,
               short: true
             }
           ]
         }
       ]
-      //text: `Next session room: ${_ticket.owlSession}`
     });
     axios.post(response_url, {
       response_type: "in_channel",
-      text: `<@${user_name}> incoming <@${_ticket.by}>`
+      text: `<@${user_name}> incoming <@${ticket.by}>`
     });
   })
   .catch(err => next(err));
@@ -340,3 +344,5 @@ const closeServer = () => {
 if(require.main === module){
   runServer().catch(err => console.error(err));
 }
+
+module.exports = {app, runServer, closeServer};
