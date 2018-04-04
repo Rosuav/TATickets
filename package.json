@@ -1,6 +1,6 @@
 {
   "name": "tickets",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Ticket system for Thinkful TAing",
   "main": "index.js",
   "scripts": {
