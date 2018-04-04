@@ -44,9 +44,9 @@ app.post('/support', (req, res, next) => {
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
   const sentences = text ? text.split(' ') : [];
-  let session = sentences[0] && (sentences[0].includes('https://') || sentences[0].includes('http://')) ? sentences[0] : null;
-  let issue = session ? sentences.slice(1).join(' ') : sentences.join(' ');
-  if(text === "cancel"){
+  let session = sentences.find(sentence => sentence.includes('http://') || sentence.includes('https://'));
+  let issue = sentences.filter(sentence => sentence !== session).join(' ');
+  if(text === "cancel" || text === "remove"){
     Ticket.findOne({
       by: user_name,
       channelId: channel_id,
