@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "test": "NODE_ENV=test mocha --exit",
-    "deploy": "now -e NODE_ENV=production -e DATABASE_URL=$DATABASE_URL --token $NOW_TOKEN --npm",
+    "deploy": "now -e NODE_ENV=production -e DATABASE_URL=$DATABASE_URL --token $NOW_TOKEN --npm --public",
     "alias": "now alias --token $NOW_TOKEN"
   },
   "author": "",
