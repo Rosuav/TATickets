@@ -4,8 +4,10 @@
   "description": "Ticket system for Thinkful TAing",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "NODE_ENV=test mocha --exit"
+    "start": "nodemon index.js",
+    "test": "NODE_ENV=test mocha --exit",
+    "deploy": "now -e NODE_ENV=production -e DATABASE_URL=$DATABASE_URL --token $NOW_TOKEN --npm",
+    "alias": "now alias --token $NOW_TOKEN"
   },
   "author": "",
   "license": "ISC",
@@ -21,5 +23,9 @@
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "mocha": "^5.0.5"
+  },
+  "now": {
+    "name": "tickets",
+    "alias": "tf-tatickets.now.sh"
   }
 }
