@@ -334,7 +334,7 @@ const runServer = (databaseUrl, port=PORT) => {
 }
 
 if(require.main === module){
-  runServer(DATABASE_URL).catch(err => console.error(err));
+  runServer(DATABASE_URL);
 }
 
 module.exports = app;
