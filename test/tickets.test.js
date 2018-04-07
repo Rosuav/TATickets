@@ -165,9 +165,4 @@ describe('TFTATickets API - Tickets', function () {
         });
     });
   });
-
-  describe('POST /next', function () {
-    it('should create and return a new mentor when provided valid data', function () {
-    });
-  });
 });
