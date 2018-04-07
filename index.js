@@ -312,7 +312,7 @@ app.use((err, req, res, next) => {
 });
 
 let server;
-const runServer = (databaseUrl=DATABASE_URL, port=PORT) => {
+const runServer = (databaseUrl, port=PORT) => {
   console.log(databaseUrl);
   return new Promise((resolve, reject) => {
    mongoose.connect(databaseUrl, err => {
@@ -343,7 +343,7 @@ const closeServer = () => {
 }
 
 if(require.main === module){
-  runServer().catch(err => console.error(err));
+  runServer(DATABASE_URL).catch(err => console.error(err));
 }
 
 module.exports = {app, runServer, closeServer};
