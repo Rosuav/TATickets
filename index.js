@@ -313,7 +313,7 @@ app.use((err, req, res, next) => {
 
 let server;
 const runServer = (databaseUrl, port=PORT) => {
-  console.log(databaseUrl);
+  console.log(databaseUrl.replace('https',''));
   return new Promise((resolve, reject) => {
    mongoose.connect(databaseUrl, err => {
       if(err) return reject(err);
