@@ -2,8 +2,9 @@ language: node_js
 node_js:
 - "node"
 cache: npm
-before_script: npm i -g now
-script: npm run deploy
+script: npm run test
+before_deploy: npm i -g now
+deploy: npm run deploy
 #after_script: npm run alias
 env:
   global:
