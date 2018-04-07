@@ -38,15 +38,5 @@
     "_id": "5a9f8a097d8f2783589dd1a9",
     "email": "mentorfour@mail.com",
     "slackUsername": "mentor4"
-  },
-  {
-    "name": {
-      "firstName": "Mentor",
-      "lastName": "Five"
-    },
-    "isActive": true,
-    "_id": "5a9f8a487d8f2783589dd1aa",
-    "email": "mentorfive@mail.com",
-    "slackUsername": "mentor5"
   }
 ]
