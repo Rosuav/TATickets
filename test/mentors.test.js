@@ -1,5 +1,5 @@
 'use strict';
-const { app, runServer, closeServer } = require('../index');
+const app = require('../index');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
@@ -15,7 +15,7 @@ chai.use(chaiHttp);
 
 describe('TFTATickets API - Mentors', function () {
   before(function () {
-    return runServer(TEST_DATABASE_URL);
+    return mongoose.connect(TEST_DATABASE_URL);
   });
 
   beforeEach(function () {
