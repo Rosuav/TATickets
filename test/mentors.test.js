@@ -27,7 +27,7 @@ describe('TFTATickets API - Mentors', function () {
   });
 
   after(function () {
-    return closeServer();
+    return mongoose.disconnect();
   });
 
   describe('GET /mentors', function () {

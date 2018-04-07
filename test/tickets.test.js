@@ -28,7 +28,7 @@ describe('TFTATickets API - Tickets', function () {
   });
 
   after(function () {
-    return closeServer();
+    return mongoose.disconnect();
   });
 
   describe('POST /support', function () {
