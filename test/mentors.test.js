@@ -4,7 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
 
-const { TEST_DATABASE_URL } = require('../config');
+const { TEST_MONGODB_URI } = require('../config');
 
 const { Mentor } = require('../models');
 const seedMentors = require('../data/mentors');
@@ -15,7 +15,7 @@ chai.use(chaiHttp);
 
 describe('TFTATickets API - Mentors', function () {
   before(function () {
-    return mongoose.connect(TEST_DATABASE_URL);
+    return mongoose.connect(TEST_MONGODB_URI);
   });
 
   beforeEach(function () {

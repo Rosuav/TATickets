@@ -5,5 +5,5 @@ exports.DATABASE_URL = process.env.DATABASE_URL ||
                       'mongodb://localhost/tftatickets';
 
 //for testing
-exports.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL ||
+exports.TEST_MONGODB_URI = process.env.TEST_MONGODB_URI ||
                       'mongodb://localhost/test-tftatickets';

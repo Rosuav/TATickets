@@ -5,7 +5,7 @@ const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
 const moment = require('moment');
 
-const { TEST_DATABASE_URL } = require('../config');
+const { TEST_MONGODB_URI } = require('../config');
 
 const { Ticket } = require('../models');
 const seedTickets = require('../data/tickets');
@@ -16,7 +16,7 @@ chai.use(chaiHttp);
 
 describe('TFTATickets API - Tickets', function () {
   before(function () {
-    return mongoose.connect(TEST_DATABASE_URL);
+    return mongoose.connect(TEST_MONGODB_URI);
   });
 
   beforeEach(function () {
