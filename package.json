@@ -4,7 +4,7 @@
   "description": "Ticket system for Thinkful TAing",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "test": "NODE_ENV=test mocha --exit",
     "deploy": "now -e NODE_ENV=production -e DATABASE_URL=$DATABASE_URL -t $NOW_TOKEN -p --npm",
     "alias": "now alias --token $NOW_TOKEN"
