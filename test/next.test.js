@@ -25,11 +25,10 @@ describe('TFTATickets API - Tickets', function() {
   });
 
   beforeEach(function() {
-    return Ticket.insertMany(seedTickets);
-  });
-
-  beforeEach(function() {
-    return Mentor.insertMany(seedMentors);
+    return Mentor.insertMany(seedMentors)
+    .then(() => {
+      return Ticket.insertMany(seedTickets)
+    });
   });
 
   afterEach(function() {
@@ -68,7 +67,6 @@ describe('TFTATickets API - Tickets', function() {
         return chai.request(app).post('/next').send(slackRequest);
       }).then(function(res) {
         const body = res.body;
-        console.log(body);
         const attachment = body.attachments[0];
         const field = attachment.fields[0];
         expect(res).to.have.status(200);
