@@ -4,7 +4,7 @@ const axios = require('axios');
 
 const router = express.Router();
 
-const { Ticket } = require('../../models');
+const { Mentor, Ticket } = require('../../models');
 
 router.post('/', (req, res, next) => {
   const {channel_id, user_name, response_url} = req.body;

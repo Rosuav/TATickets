@@ -18,7 +18,7 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-describe('TFTATickets API - Tickets', function () {
+describe('TFTATickets API - Tickets with /support', function () {
   before(function () {
     return mongoose.connect(TEST_MONGODB_URI);
   });
@@ -36,11 +36,19 @@ describe('TFTATickets API - Tickets', function () {
   });
 
   describe('POST /support', function () {
-    const postStub = sinon.stub(axios, 'post');
+    let postStub;
+
+    before(function() {
+      postStub = sinon.stub(axios, 'post');
+    })
 
     afterEach(function() {
       postStub.reset();
-    })
+    });
+
+    after(function() {
+      axios.post.restore();
+    });
 
     it('should create and return a new ticket with all the required fields', function () {
       const sessionUrl = 'https://sessions.thinkful.com/test'
@@ -62,7 +70,7 @@ describe('TFTATickets API - Tickets', function () {
           expect(body).to.include.keys('response_type', 'text');
           expect(body.response_type).to.equal('ephemeral');
           expect(body.text).to.equal('Request successfully pushed to the queue');
-          // Should this be moved to different assertion?
+          // Testing second message
           expect(postStub.firstCall.args[0]).to.equal(newTicket.response_url);
           expect(postStub.firstCall.args[1]).to.be.an('object');
           expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
@@ -139,9 +147,8 @@ describe('TFTATickets API - Tickets', function () {
             expect(body.text).to.equal('Request successfully removed from the queue');
             expect(postStub.firstCall.args[1]).to.be.an('object');
             expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
-            // TODO: Improve this assertion
             expect(postStub.firstCall.args[1].text).to.equal(
-              `${'https://sessions.thinkful.com/test'} removed from the queue`
+              `${ticket.owlSession} removed from the queue`
             );
           })
           .then(function () {
