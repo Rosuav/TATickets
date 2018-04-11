@@ -75,10 +75,10 @@ app.post('/support', (req, res, next) => {
     //return next(`You need to type a valid session url to be able to push it to the queue`);
     session = `https://sessions.thinkful.com/${user_name}`
   }
-  Ticket.findOne({ 
-    owlSession: session, 
-    channelId: channel_id, 
-    mentor: null, 
+  Ticket.findOne({
+    owlSession: session,
+    channelId: channel_id,
+    mentor: null,
     created_at: { $gte: today.toDate() }
   })
   .then(ticket => {
@@ -95,7 +95,7 @@ app.post('/support', (req, res, next) => {
   })
   .then(ticket => {
     const postIssue = issue ? `issued: ${issue[issue.length - 1] === "." ? issue : `${issue}.`} In ${session}` : `required a mentor in ${session}`;
-    
+
     res.status(200).json({
       response_type: "ephemeral",
       text: `Request successfully pushed to the queue`
@@ -118,11 +118,11 @@ app.post('/next', (req, res, next) => {
   .then(mentor => {
     if(!mentor) return Promise.reject('Only registered mentors could call next');
     _mentor = mentor;
-    return Ticket.findOne({ 
+    return Ticket.findOne({
       channelId: channel_id,
       mentor: null,
       isActive: true,
-      created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() } 
+      created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() }
     })
     .sort({created_at: 1})
   })
@@ -177,7 +177,7 @@ app.post('/reviews', (req, res, next) => {
       return Ticket.find({
         channelId: channel_id,
         mentor,
-        created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() }, 
+        created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() },
         reviewed_at: { $exists: true },
         isActive: true
       });
@@ -187,7 +187,7 @@ app.post('/reviews', (req, res, next) => {
       const id = params[0];
       const colors = params[1];
       const review = params.slice(2, params.length).join(' ');
-      
+
       return Ticket.findOne({ _id: id })
       .then(ticket => {
         if(!ticket){
@@ -233,14 +233,14 @@ app.post('/reviews', (req, res, next) => {
           res.status(200).json({
             response_type: "ephemeral",
             text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')}`
-          });     
+          });
         break;
         default:
         res.status(200).json({
           response_type: "ephemeral",
           text: `*${title}*\n${tickets.map(ticket => `[${ticket._id}] ${ticket.owlSession} => ${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')}`
-        }); 
-      }    
+        });
+      }
     }
   })
   .catch(err =>  next(err));
@@ -271,16 +271,16 @@ app.post('/summary', (req, res) => {
   const { channel_id, text } = req.body;
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
-  
+
   if(text === "channel"){
     return res.send(`Channel ID: *${channel_id}*`);
   }
-  
+
   let channelId = text ? text : channel_id;
-  
-  Ticket.find({ 
-    channelId: channelId, 
-    created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() }, 
+
+  Ticket.find({
+    channelId: channelId,
+    created_at: { $gte: today.toDate(), $lt: tomorrow.toDate() },
     reviewed_at: { $exists: true },
     isActive: true
   })
@@ -290,7 +290,7 @@ app.post('/summary', (req, res) => {
     res.status(200).json({
       response_type: "ephemeral",
       text: tickets.map(ticket => `${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')
-    }); 
+    });
   })
 })
 

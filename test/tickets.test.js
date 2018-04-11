@@ -2,6 +2,10 @@
 const app = require('../index');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const sinon = require('sinon');
+
+const axios = require('axios');
+
 const mongoose = require('mongoose');
 const moment = require('moment');
 
@@ -32,12 +36,19 @@ describe('TFTATickets API - Tickets', function () {
   });
 
   describe('POST /support', function () {
+    const postStub = sinon.stub(axios, 'post');
+
+    afterEach(function() {
+      postStub.reset();
+    })
+
     it('should create and return a new ticket with all the required fields', function () {
+      const sessionUrl = 'https://sessions.thinkful.com/test'
       const newTicket = {
         channel_id: 'G9AJF01BL',
         user_name: 'TestUser',
         response_url: 'http://localhost:8080/test',
-        text: 'https://sessions.thinkful.com/test This is just a test'
+        text: `${sessionUrl} This is just a test`
       }
       let body;
       return chai.request(app)
@@ -51,6 +62,13 @@ describe('TFTATickets API - Tickets', function () {
           expect(body).to.include.keys('response_type', 'text');
           expect(body.response_type).to.equal('ephemeral');
           expect(body.text).to.equal('Request successfully pushed to the queue');
+          // Should this be moved to different assertion?
+          expect(postStub.firstCall.args[0]).to.equal(newTicket.response_url);
+          expect(postStub.firstCall.args[1]).to.be.an('object');
+          expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
+          expect(postStub.firstCall.args[1].text).to.equal(
+            `<@${newTicket.user_name}> issued: This is just a test. In ${sessionUrl}`
+          );
         });
     });
 
@@ -119,6 +137,12 @@ describe('TFTATickets API - Tickets', function () {
             expect(body).to.include.keys('response_type', 'text');
             expect(body.response_type).to.equal('ephemeral');
             expect(body.text).to.equal('Request successfully removed from the queue');
+            expect(postStub.firstCall.args[1]).to.be.an('object');
+            expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
+            // TODO: Improve this assertion
+            expect(postStub.firstCall.args[1].text).to.equal(
+              `${'https://sessions.thinkful.com/test'} removed from the queue`
+            );
           })
           .then(function () {
             let cancelledBody;
