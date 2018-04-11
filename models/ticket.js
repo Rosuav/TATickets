@@ -1,31 +1,8 @@
 const mongoose = require('mongoose');
 
-const mentorSchema = mongoose.Schema({
-  name: {
-    firstName: {type: String, required: true},
-		lastName: {type: String, required: true}
-  },
-  email: {
-		type: String,
-		required: true
-	},
-	slackUsername: {
-		type: String,
-    required: true,
-    unique: true
-	},
-	isActive: {
-		type: Boolean,
-		required: true,
-		default: true
-	}
-});
-
-const Mentor = mongoose.model('Mentor', mentorSchema);
-
 const ticketSchema = mongoose.Schema({
   owlSession: {
-    type: String, 
+    type: String,
     required: true
   },
   issue: {
@@ -71,4 +48,4 @@ const ticketSchema = mongoose.Schema({
 
 const Ticket = mongoose.model('Ticket', ticketSchema);
 
-module.exports = { Mentor, Ticket };
+module.exports = Ticket;
