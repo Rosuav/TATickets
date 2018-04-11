@@ -83,7 +83,6 @@ describe('TFTATickets API - Tickets', function() {
         expect(field.title).to.equal('Room');
         expect(field.value).to.equal('https://sessions.thinkful.com/test8');
         expect(field.short).to.equal(true);
-
         // Testing second message
         expect(postStub.firstCall.args[0]).to.equal(slackRequest.response_url);
         expect(postStub.firstCall.args[1]).to.be.an('object');
