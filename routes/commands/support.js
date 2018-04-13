@@ -39,20 +39,22 @@ router.post('/', (req, res, next) => {
     });
     return;
   }
-  
+  const m = moment().tz('America/New_York');
+
   const hours = moment().get('hour');
   const minutes = moment().get('minutes')
-  // Morning start time, 11AM Eastern
-  if (hours < 11)
-    throw 'Oops! TA support is available starting at 11AM Eastern, please request again later!';
+
+  // Morning class time, 10AM Eastern
+  if (hours < 10)
+    throw 'Oops! TA support is available starting at <!date^1514818800^{time}|10AM Eastern>, in the meantime check out an open session: https://www.thinkful.com/open-sessions/qa-sessions/ !';
 
   // Lunch between 12:45 and 1:30 Eastern
   if ((hours === 12 && minutes >= 45) || (hours === 13 && minutes <= 30))
-    throw "Oops! It's lunch time, TAs will be back at 1:30 Eastern";
+    throw "Oops! It's lunch time, TA support will be back at <!date^1514831400^{time}|1:30PM Eastern>";
 
   // Afternoon TA end time, 5:30 Eastern
   if ((hours === 17 && minutes > 30) || hours >= 18)
-    throw 'Oops! TA support is only available until 4:30 Eastern!';
+    throw 'Oops! TA support is only available until <!date^1514845800^{time}|5:30PM Eastern>, in the meantime check out an open session: https://www.thinkful.com/open-sessions/qa-sessions/ !';
 
   if (!session) {
     //return next(`You need to type a valid session url to be able to push it to the queue`);
@@ -72,9 +74,9 @@ router.post('/', (req, res, next) => {
       return Ticket.create({issue, owlSession: session, by: user_name, channelId: channel_id});
     }
   }).then(mentors => {
-    const m = moment();
+    const m = moment().tz('America/New_York');
 
-    // TODO: Make this better. It is not robust for timezones / DST
+    // TODO: Make this better.
     // 13 the magic number because Eastern Timezone lunch happens around 1PM
     const timeOfDay = parseFloat(m.format("HH")) >= 13 ? 'afternoon' : 'morning';
 

@@ -205,7 +205,7 @@ describe('TATickets - /support', function () {
           expect(body).to.be.a('object');
           expect(body).to.include.keys('response_type', 'text');
           expect(body.response_type).to.equal('ephemeral');
-          expect(body.text).to.equal('Oops! TA support is available starting at 11AM Eastern, please request again later!');
+          expect(body.text).to.equal('Oops! TA support is available starting at <!date^1514818800^{time}|10AM Eastern>, in the meantime check out an open session: https://www.thinkful.com/open-sessions/qa-sessions/ !');
         });
     });
 
@@ -232,7 +232,7 @@ describe('TATickets - /support', function () {
           expect(body).to.be.a('object');
           expect(body).to.include.keys('response_type', 'text');
           expect(body.response_type).to.equal('ephemeral');
-          expect(body.text).to.equal('Oops! It\'s lunch time, TAs will be back at 1:30 Eastern');
+          expect(body.text).to.equal('Oops! It\'s lunch time, TA support will be back at <!date^1514831400^{time}|1:30PM Eastern>');
         });
     });
 
@@ -259,7 +259,7 @@ describe('TATickets - /support', function () {
           expect(body).to.be.a('object');
           expect(body).to.include.keys('response_type', 'text');
           expect(body.response_type).to.equal('ephemeral');
-          expect(body.text).to.equal('Oops! TA support is only available until 4:30 Eastern!');
+          expect(body.text).to.equal('Oops! TA support is only available until <!date^1514845800^{time}|5:30PM Eastern>, in the meantime check out an open session: https://www.thinkful.com/open-sessions/qa-sessions/ !');
         });
     });
 
