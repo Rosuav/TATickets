@@ -1,10 +1,12 @@
 const express = require('express');
-const moment = require('moment');
+const moment = require('moment-timezone');
+
 const axios = require('axios');
 
 const router = express.Router();
 
 const { Mentor, Ticket } = require('../../models');
+const { formatTicketMessage } = require('../../helpers')
 
 router.post('/', (req, res, next) => {
   const {channel_id, user_name, response_url} = req.body;
@@ -28,24 +30,16 @@ router.post('/', (req, res, next) => {
     if(!ticket) return Promise.reject(`No sessions in queue`);
     ticket.mentor = _mentor;
     ticket.attended_at = Date.now();
-    ticket.save();
-    res.status(200).json({
-      response_type: "ephemeral",
-      attachments: [
-        {
-          fallback: `Ticket from <@${ticket.by}> - ${ticket.issue}`,
-          pretext: `Ticket from <@${ticket.by}>`,
-          text: ticket.issue,
-          fields: [
-            {
-              title: "Room",
-              value: ticket.owlSession,
-              short: true
-            }
-          ]
-        }
-      ]
-    });
+    return ticket.save();
+  }).then(ticket => {
+    res.status(200).json(
+      formatTicketMessage({
+        user_name: ticket.by,
+        issue: ticket.issue,
+        session: ticket.owlSession,
+        response_type: 'ephemeral'
+      }));
+
     axios.post(response_url, {
       response_type: "in_channel",
       text: `<@${user_name}> incoming <@${ticket.by}>`

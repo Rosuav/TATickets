@@ -1,55 +1,34 @@
 'use strict';
-const app = require('../index');
+const app = require('../../index');
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
-
 const axios = require('axios');
 
-const mongoose = require('mongoose');
 const moment = require('moment');
 
-const { TEST_MONGODB_URI } = require('../config');
-
-const { Ticket } = require('../models');
-const seedTickets = require('../data/tickets');
+const { Mentor, Ticket } = require('../../models');
 
 const expect = chai.expect;
-
 chai.use(chaiHttp);
 
-describe('TFTATickets API - Tickets with /support', function () {
-  before(function () {
-    return mongoose.connect(TEST_MONGODB_URI);
+describe('TATickets - /support', function () {
+  let postStub;
+
+  before(function() {
+    postStub = sinon.stub(axios, 'post');
   });
 
-  beforeEach(function () {
-    return Ticket.insertMany(seedTickets);
+  afterEach(function() {
+    postStub.reset();
   });
 
-  afterEach(function () {
-    return mongoose.connection.db.dropDatabase();
-  });
-
-  after(function () {
-    return mongoose.disconnect();
+  after(function() {
+    axios.post.restore();
   });
 
   describe('POST /support', function () {
-    let postStub;
-
-    before(function() {
-      postStub = sinon.stub(axios, 'post');
-    })
-
-    afterEach(function() {
-      postStub.reset();
-    });
-
-    after(function() {
-      axios.post.restore();
-    });
-
     it('should create and return a new ticket with all the required fields', function () {
       const sessionUrl = 'https://sessions.thinkful.com/test'
       const newTicket = {
@@ -74,8 +53,8 @@ describe('TFTATickets API - Tickets with /support', function () {
           expect(postStub.firstCall.args[0]).to.equal(newTicket.response_url);
           expect(postStub.firstCall.args[1]).to.be.an('object');
           expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
-          expect(postStub.firstCall.args[1].text).to.equal(
-            `<@${newTicket.user_name}> issued: This is just a test. In ${sessionUrl}`
+          expect(postStub.firstCall.args[1].attachments[0].fallback).to.equal(
+            `<@${newTicket.user_name}> issued: This is just a test. In ${sessionUrl} <@mentor4> <@mentor5>`
           );
         });
     });
@@ -195,5 +174,98 @@ describe('TFTATickets API - Tickets with /support', function () {
           });
         });
     });
+
+    describe('Disallow requests outside of TA Hours', function() {
+      let clock;
+
+      afterEach(function() {
+        clock.restore();
+      })
+
+    it('should not allow posting tickets before the morning session', function () {
+      clock = sinon.useFakeTimers({
+        now: new Date('April 11, 2018 9:00 AM'), // A Wednesday
+        toFake: ['Date']
+      });
+
+      const newTicket = {
+        channel_id: 'G9AJF01BL',
+        user_name: 'TestUser',
+        response_url: 'http://localhost:8080/test',
+        text: ''
+      }
+      let body;
+      return chai.request(app)
+        .post('/support')
+        .send(newTicket)
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('response_type', 'text');
+          expect(body.response_type).to.equal('ephemeral');
+          expect(body.text).to.equal('Oops! TA support is available starting at 11AM Eastern, please request again later!');
+        });
+    });
+
+    it('should not allow posting tickets during lunch', function () {
+      clock = sinon.useFakeTimers({
+        now: new Date('April 11, 2018 1:25 PM'), // A Wednesday
+        toFake: ['Date']
+      });
+
+      const newTicket = {
+        channel_id: 'G9AJF01BL',
+        user_name: 'TestUser',
+        response_url: 'http://localhost:8080/test',
+        text: ''
+      }
+      let body;
+      return chai.request(app)
+        .post('/support')
+        .send(newTicket)
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('response_type', 'text');
+          expect(body.response_type).to.equal('ephemeral');
+          expect(body.text).to.equal('Oops! It\'s lunch time, TAs will be back at 1:30 Eastern');
+        });
+    });
+
+    it('should not allow posting tickets after the afternoon session', function () {
+      clock = sinon.useFakeTimers({
+        now: new Date('April 11, 2018 8:00 PM'), // A Wednesday
+        toFake: ['Date']
+      });
+
+      const newTicket = {
+        channel_id: 'G9AJF01BL',
+        user_name: 'TestUser',
+        response_url: 'http://localhost:8080/test',
+        text: ''
+      }
+      let body;
+      return chai.request(app)
+        .post('/support')
+        .send(newTicket)
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('response_type', 'text');
+          expect(body.response_type).to.equal('ephemeral');
+          expect(body.text).to.equal('Oops! TA support is only available until 4:30 Eastern!');
+        });
+    });
+
+
+
+        })
+
   });
 });

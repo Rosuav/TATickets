@@ -18,7 +18,24 @@ const mentorSchema = mongoose.Schema({
 		type: Boolean,
 		required: true,
 		default: true
-	}
+	},
+  notificationPreferences: [{
+      channelId: {
+        type: String,
+        required: true
+      },
+      dayOfWeek: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5
+      },
+      timeOfDay: {
+        type: String,
+        required: true,
+        enum: ['morning', 'afternoon']
+      }
+  }]
 });
 
 const Mentor = mongoose.model('Mentor', mentorSchema);

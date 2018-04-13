@@ -1,5 +1,5 @@
 const express = require('express');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const router = express.Router();
 
 const { Ticket } = require('../../models');

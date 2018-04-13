@@ -50,6 +50,18 @@
     "owlSession": "https://sessions.thinkful.com/test8",
     "by": "test8",
     "channelId": "G9AJF01BL",
-    "colors": []
+    "colors": [],
+    "created_at": "2018-04-11T08:22:01.747Z"
+
+  },{
+    "_id": "5ad0125c416fe1488abd0149",
+    "isActive": true,
+    "issue": "jQuery does not work",
+    "owlSession": "https://sessions.thinkful.com/test9",
+    "by": "test9",
+    "channelId": "G8RK1A9EG",
+    "colors": [],
+    "created_at": "2018-04-11T08:22:01.747Z"
+
   }
 ]
