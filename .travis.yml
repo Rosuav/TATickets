@@ -3,8 +3,12 @@ node_js:
 - node
 cache: npm
 before_install: npm i -g now
-script: npm run test && npm run deploy
-after_script: npm run alias
+script: npm run test
+deploy: 
+  provider: script
+  script: npm run deploy && npm run alias
+  on:
+    branch: master
 services: mongodb
 env:
   global:

@@ -52,7 +52,7 @@ describe('TATickets - /support', function () {
           // Testing second message
           expect(postStub.firstCall.args[0]).to.equal(newTicket.response_url);
           expect(postStub.firstCall.args[1]).to.be.an('object');
-          expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
+          expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');          
           expect(postStub.firstCall.args[1].attachments[0].fallback).to.equal(
             `<@${newTicket.user_name}> issued: This is just a test. In ${sessionUrl} <@mentor4> <@mentor5>`
           );
@@ -184,7 +184,7 @@ describe('TATickets - /support', function () {
 
     it('should not allow posting tickets before the morning session', function () {
       clock = sinon.useFakeTimers({
-        now: new Date('April 11, 2018 9:00 AM'), // A Wednesday
+        now: new Date(1523451600000), // April 11, 2018 at 9:00AM (eastern) a Wednesday
         toFake: ['Date']
       });
 
@@ -211,7 +211,7 @@ describe('TATickets - /support', function () {
 
     it('should not allow posting tickets during lunch', function () {
       clock = sinon.useFakeTimers({
-        now: new Date('April 11, 2018 1:25 PM'), // A Wednesday
+        now: new Date(1523466000000), // April 11, 2018 at 1:00PM, a Wednesday (eastern)
         toFake: ['Date']
       });
 
@@ -238,7 +238,7 @@ describe('TATickets - /support', function () {
 
     it('should not allow posting tickets after the afternoon session', function () {
       clock = sinon.useFakeTimers({
-        now: new Date('April 11, 2018 8:00 PM'), // A Wednesday
+        now: new Date(1523482500000), // April 11, 2018 at 5:35PM, a Wednesday (eastern)
         toFake: ['Date']
       });
 

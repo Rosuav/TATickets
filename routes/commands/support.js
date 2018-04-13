@@ -41,8 +41,8 @@ router.post('/', (req, res, next) => {
   }
   const m = moment().tz('America/New_York');
 
-  const hours = moment().get('hour');
-  const minutes = moment().get('minutes')
+  const hours = m.get('hour');
+  const minutes = m.get('minutes')
 
   // Morning class time, 10AM Eastern
   if (hours < 10)
@@ -78,6 +78,7 @@ router.post('/', (req, res, next) => {
 
     // TODO: Make this better.
     // 13 the magic number because Eastern Timezone lunch happens around 1PM
+    // Currently relies on errors for being out of time slots
     const timeOfDay = parseFloat(m.format("HH")) >= 13 ? 'afternoon' : 'morning';
 
     return Mentor.find({
