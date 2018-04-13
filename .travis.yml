@@ -4,8 +4,9 @@ node_js:
 cache: npm
 before_install: npm i -g now
 script: npm run test
-after_success:
-- npm run deploy && npm run alias
+deploy:
+  provider: script
+  script: deploy.sh
   on:
     branch: master
 services: mongodb
