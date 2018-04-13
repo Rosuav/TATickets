@@ -6,7 +6,7 @@ before_install: npm i -g now
 script: npm run test
 deploy:
   provider: script
-  script: deploy.sh
+  script: "./deploy.sh"
   on:
     branch: master
 services: mongodb
