@@ -7,11 +7,11 @@ const { PORT, DATABASE_URL } = require('./config');
 const { Mentor, Ticket } = require('./models');
 
 const mentors = require('./routes/mentors');
-const { next, queue, reviews, summary, support } = require('./routes/commands');
+const { next, notifications, queue, reviews, summary, support } = require('./routes/commands');
 
 const app = express();
 
-app.use(morgan('common'));
+// app.use(morgan('common'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -21,6 +21,7 @@ app.use('/mentors', mentors);
 // Slack POST Routes
 app.use('/support', support);
 app.use('/next', next);
+app.use('/notifications', notifications);
 app.use('/queue', queue);
 app.use('/reviews', reviews);
 app.use('/summary', summary);

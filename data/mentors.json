@@ -27,7 +27,12 @@
     "isActive": true,
     "_id": "5a9f89dc7d8f2783589dd1a8",
     "email": "mentorthree@mail.com",
-    "slackUsername": "mentor3"
+    "slackUsername": "mentor3",
+    "notificationPreferences": [{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 1,
+        "timeOfDay": "afternoon"
+    }]
   },
   {
     "name": {
@@ -37,6 +42,61 @@
     "isActive": true,
     "_id": "5a9f8a097d8f2783589dd1a9",
     "email": "mentorfour@mail.com",
-    "slackUsername": "mentor4"
+    "slackUsername": "mentor4",
+    "notificationPreferences": [{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 1,
+        "timeOfDay": "afternoon"
+    },{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 2,
+        "timeOfDay": "afternoon"
+    },{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 3,
+        "timeOfDay": "afternoon"
+    },{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 4,
+        "timeOfDay": "afternoon"
+    },{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 5,
+        "timeOfDay": "afternoon"
+    },{
+        "channelId": "123456789",
+        "dayOfWeek": 1,
+        "timeOfDay": "afternoon"
+    }]
+  },
+  {
+    "name": {
+      "firstName": "Mentor",
+      "lastName": "Five"
+    },
+    "isActive": true,
+    "_id": "5ace7803a38d959de1840590",
+    "email": "mentorfive@mail.com",
+    "slackUsername": "mentor5",
+    "notificationPreferences": [{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 3,
+        "timeOfDay": "afternoon"
+    }]
+  },
+  {
+    "name": {
+      "firstName": "Mentor",
+      "lastName": "Six"
+    },
+    "isActive": true,
+    "_id": "5acfb0fddfbd239616b0bea8",
+    "email": "mentorsix@mail.com",
+    "slackUsername": "mentor6",
+    "notificationPreferences": [{
+        "channelId": "G9AJF01BL",
+        "dayOfWeek": 3,
+        "timeOfDay": "morning"
+    }]
   }
 ]

@@ -1,35 +1,15 @@
 'use strict';
-const app = require('../index');
+const app = require('../../index');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const mongoose = require('mongoose');
 
-const { TEST_MONGODB_URI } = require('../config');
-
-const { Mentor } = require('../models');
-const seedMentors = require('../data/mentors');
+const { Mentor } = require('../../models');
 
 const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-describe('TFTATickets API - Mentors', function () {
-  before(function () {
-    return mongoose.connect(TEST_MONGODB_URI);
-  });
-
-  beforeEach(function () {
-    return Mentor.insertMany(seedMentors);
-  });
-
-  afterEach(function () {
-    return mongoose.connection.db.dropDatabase();
-  });
-
-  after(function () {
-    return mongoose.disconnect();
-  });
-
+describe('TATickets - /mentors', function () {
   describe('GET /mentors', function () {
     it('should return the correct number of mentors', function () {
       const dbPromise = Mentor.find();
