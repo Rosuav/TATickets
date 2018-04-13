@@ -7,7 +7,7 @@ const { PORT, DATABASE_URL } = require('./config');
 const { Mentor, Ticket } = require('./models');
 
 const mentors = require('./routes/mentors');
-const { next, queue, reviews, summary, support } = require('./routes/commands');
+const { next, queue, reviews, summary, support, help } = require('./routes/commands');
 
 const app = express();
 
@@ -24,27 +24,11 @@ app.use('/next', next);
 app.use('/queue', queue);
 app.use('/reviews', reviews);
 app.use('/summary', summary);
+app.use('/help', help);
 
 app.post('/test', (req, res, next) => {
   //console.log(req.body);
   res.status(204).json();
-})
-
-app.get('/clear/:channelID', function(req, res) {
-  const { channelID } = req.params;
-  if(!channelID) return res.send(`A channel ID is required.`);
-  Ticket.update({ channelId: channelID, isActive: true }, {isActive: false})
-  .then(ticket => {
-    res.send(`Tickets from ${channelID} cleared.`);
-  });
-});
-
-app.post('/ta-mentor', function(req, res){
-  const {text, user_id} = req.body;
-  res.json({
-    response_type: "ephemeral",
-    text:`${text} ${user_id}`
-  });
 })
 
 app.use((err, req, res, next) => {
