@@ -39,6 +39,14 @@ app.get('/clear/:channelID', function(req, res) {
   });
 });
 
+app.post('/ta-mentor', function(req, res){
+  const {text, user_id} = req.body;
+  res.json({
+    response_type: "ephemeral",
+    text:`${text} ${user_id}`
+  });
+})
+
 app.use((err, req, res, next) => {
   res.status(err.status || 200);
   res.json({
