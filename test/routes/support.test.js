@@ -1,55 +1,34 @@
 'use strict';
-const app = require('../index');
+const app = require('../../index');
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
-
 const axios = require('axios');
 
-const mongoose = require('mongoose');
 const moment = require('moment');
 
-const { TEST_MONGODB_URI } = require('../config');
-
-const { Ticket } = require('../models');
-const seedTickets = require('../data/tickets');
+const { Mentor, Ticket } = require('../../models');
 
 const expect = chai.expect;
-
 chai.use(chaiHttp);
 
-describe('TFTATickets API - Tickets with /support', function () {
-  before(function () {
-    return mongoose.connect(TEST_MONGODB_URI);
+describe('TATickets - /support', function () {
+  let postStub;
+
+  before(function() {
+    postStub = sinon.stub(axios, 'post');
   });
 
-  beforeEach(function () {
-    return Ticket.insertMany(seedTickets);
+  afterEach(function() {
+    postStub.reset();
   });
 
-  afterEach(function () {
-    return mongoose.connection.db.dropDatabase();
-  });
-
-  after(function () {
-    return mongoose.disconnect();
+  after(function() {
+    axios.post.restore();
   });
 
   describe('POST /support', function () {
-    let postStub;
-
-    before(function() {
-      postStub = sinon.stub(axios, 'post');
-    })
-
-    afterEach(function() {
-      postStub.reset();
-    });
-
-    after(function() {
-      axios.post.restore();
-    });
-
     it('should create and return a new ticket with all the required fields', function () {
       const sessionUrl = 'https://sessions.thinkful.com/test'
       const newTicket = {
@@ -73,9 +52,9 @@ describe('TFTATickets API - Tickets with /support', function () {
           // Testing second message
           expect(postStub.firstCall.args[0]).to.equal(newTicket.response_url);
           expect(postStub.firstCall.args[1]).to.be.an('object');
-          expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
-          expect(postStub.firstCall.args[1].text).to.equal(
-            `<@${newTicket.user_name}> issued: This is just a test. In ${sessionUrl}`
+          expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');          
+          expect(postStub.firstCall.args[1].attachments[0].fallback).to.equal(
+            `<@${newTicket.user_name}> issued: This is just a test. In ${sessionUrl} <@mentor4> <@mentor5>`
           );
         });
     });
@@ -195,5 +174,98 @@ describe('TFTATickets API - Tickets with /support', function () {
           });
         });
     });
+
+    describe('Disallow requests outside of TA Hours', function() {
+      let clock;
+
+      afterEach(function() {
+        clock.restore();
+      })
+
+    it('should not allow posting tickets before the morning session', function () {
+      clock = sinon.useFakeTimers({
+        now: new Date(1523451600000), // April 11, 2018 at 9:00AM (eastern) a Wednesday
+        toFake: ['Date']
+      });
+
+      const newTicket = {
+        channel_id: 'G9AJF01BL',
+        user_name: 'TestUser',
+        response_url: 'http://localhost:8080/test',
+        text: ''
+      }
+      let body;
+      return chai.request(app)
+        .post('/support')
+        .send(newTicket)
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('response_type', 'text');
+          expect(body.response_type).to.equal('ephemeral');
+          expect(body.text).to.equal('Oops! TA support is available starting at <!date^1514818800^{time}|10AM Eastern>, in the meantime check out an open session: https://www.thinkful.com/open-sessions/qa-sessions/ !');
+        });
+    });
+
+    it('should not allow posting tickets during lunch', function () {
+      clock = sinon.useFakeTimers({
+        now: new Date(1523466000000), // April 11, 2018 at 1:00PM, a Wednesday (eastern)
+        toFake: ['Date']
+      });
+
+      const newTicket = {
+        channel_id: 'G9AJF01BL',
+        user_name: 'TestUser',
+        response_url: 'http://localhost:8080/test',
+        text: ''
+      }
+      let body;
+      return chai.request(app)
+        .post('/support')
+        .send(newTicket)
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('response_type', 'text');
+          expect(body.response_type).to.equal('ephemeral');
+          expect(body.text).to.equal('Oops! It\'s lunch time, TA support will be back at <!date^1514831400^{time}|1:30PM Eastern>');
+        });
+    });
+
+    it('should not allow posting tickets after the afternoon session', function () {
+      clock = sinon.useFakeTimers({
+        now: new Date(1523482500000), // April 11, 2018 at 5:35PM, a Wednesday (eastern)
+        toFake: ['Date']
+      });
+
+      const newTicket = {
+        channel_id: 'G9AJF01BL',
+        user_name: 'TestUser',
+        response_url: 'http://localhost:8080/test',
+        text: ''
+      }
+      let body;
+      return chai.request(app)
+        .post('/support')
+        .send(newTicket)
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('response_type', 'text');
+          expect(body.response_type).to.equal('ephemeral');
+          expect(body.text).to.equal('Oops! TA support is only available until <!date^1514845800^{time}|5:30PM Eastern>, in the meantime check out an open session: https://www.thinkful.com/open-sessions/qa-sessions/ !');
+        });
+    });
+
+
+
+        })
+
   });
 });
