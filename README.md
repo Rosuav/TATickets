@@ -23,12 +23,17 @@ If you are a registered mentor, you can claim tickets from students with the `/t
 
 If you are a registered mentor, you can sign up for notifications for the specific days and times (and channels, even multiple!) that you work. Support requests in your chosen time slots will mention you.
 
+![TA Ticket with mentors' Slack handles appended](http://i63.tinypic.com/2u40xo5.png)
+
 * Run the command with your days and `mornings` or `afternoons` (not optional), run this more than once, it's additive, to configure your week.
 
 
     > `/ticket-alerts monday wednesday fri afternoons`
 
     > `/ticket-alerts tue thu mornings`
+    
+    ![Representation of a calendar](http://i65.tinypic.com/xmitu0.png)
+
 
 * Enable all `mornings` or `afternoons` with a shortcut:
 
