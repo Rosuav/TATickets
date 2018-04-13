@@ -73,7 +73,7 @@ router.post('/', (req, res, next) => {
     } else {
       return Ticket.create({issue, owlSession: session, by: user_name, channelId: channel_id});
     }
-  }).then(mentors => {
+  }).then(ticket => {
     const m = moment().tz('America/New_York');
 
     // TODO: Make this better.
