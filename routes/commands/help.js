@@ -9,7 +9,11 @@ const { Mentor, Ticket } = require('../../models');
 router.post('/help', (req, res, next) => {
   const {channel_id, text, user_name, user_id, response_url} = req.body;
   
-  const keywords = ['mentor','channel'];
+  const keywords = ['mentor','channel', 'instructions'];
+
+  if(!keywords.includes(text)){
+    throw "Sorry, I don't understand what you mean."
+  }
 
   switch(text){
     case 'username':
