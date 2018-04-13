@@ -5,4 +5,5 @@ module.exports = {
   reviews: require('./reviews'),
   summary: require('./summary'),
   support: require('./support'),
+  help: require('./help')
 }
