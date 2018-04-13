@@ -17,7 +17,9 @@ Ask for help with the `/ta-support` command. Here are some examples:
 
 ### `/ticket-next`
 
-If you are a registered mentor, you can claim tickets from students with the `/ticket-next` command. No arguments. (Want to get registered? Ask Casey or Wences)
+If you are a registered mentor, you can claim tickets from students with the `/ticket-next` command (without arguments). (Want to get registered? Ask Casey or Wences)
+
+* Dequeue a ticket silently with `/ticket-next silent`
 
 ### `/ticket-alerts`
 
@@ -31,7 +33,7 @@ If you are a registered mentor, you can sign up for notifications for the specif
     > `/ticket-alerts monday wednesday fri afternoons`
 
     > `/ticket-alerts tue thu mornings`
-    
+
     ![Representation of a calendar](http://i65.tinypic.com/xmitu0.png)
 
 
@@ -49,7 +51,7 @@ If you are a registered mentor, you can sign up for notifications for the specif
 
 
     > `/ticket-alerts`
-    
+
     > `/ticket-alerts view`
 
 

@@ -67,6 +67,29 @@ describe('TATickets - /next', function() {
           `<@${mentor.slackUsername}> incoming <@${'test8'}>`
         );
       })
+    });
+    it('can silently dequeue the next ticket', function() {
+      let slackRequest;
+      let mentor;
+      return Mentor.findOne().then(_mentor => {
+        mentor = _mentor;
+        slackRequest = {
+          channel_id: 'G9AJF01BL',
+          user_name: mentor.slackUsername,
+          response_url: 'http://localhost:8080/test',
+          text: 'silent'
+        }
+        return chai.request(app).post('/next').send(slackRequest);
+      }).then(function(res) {
+        const body = res.body;
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(body).to.be.a('object');
+        expect(body).to.include.keys('response_type', 'text');
+        expect(body.response_type).to.equal('ephemeral');
+        expect(body.text).to.equal(':shushing_face: Ticket silently dequeued: https://sessions.thinkful.com/test8');
+        expect(postStub.firstCall).to.equal(null);
+      })
     })
     it('can provide feedback if there are no sessions', function() {
       // TODO: improve this, old tickets and tickets from today should be tested as well

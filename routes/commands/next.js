@@ -9,7 +9,7 @@ const { Mentor, Ticket } = require('../../models');
 const { formatTicketMessage } = require('../../helpers')
 
 router.post('/', (req, res, next) => {
-  const {channel_id, user_name, response_url} = req.body;
+  const {channel_id, user_name, response_url, text} = req.body;
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
   let _mentor;
@@ -32,18 +32,26 @@ router.post('/', (req, res, next) => {
     ticket.attended_at = Date.now();
     return ticket.save();
   }).then(ticket => {
-    res.status(200).json(
-      formatTicketMessage({
-        user_name: ticket.by,
-        issue: ticket.issue,
-        session: ticket.owlSession,
-        response_type: 'ephemeral'
-      }));
 
-    axios.post(response_url, {
-      response_type: "in_channel",
-      text: `<@${user_name}> incoming <@${ticket.by}>`
-    });
+    if (text === 'silent') {
+      res.status(200).json({
+        response_type: 'ephemeral',
+        text: `:shushing_face: Ticket silently dequeued: ${ticket.owlSession}`
+      });
+    } else {
+      res.status(200).json(
+        formatTicketMessage({
+          user_name: ticket.by,
+          issue: ticket.issue,
+          session: ticket.owlSession,
+          response_type: 'ephemeral'
+        }));
+
+        axios.post(response_url, {
+          response_type: "in_channel",
+          text: `<@${user_name}> incoming <@${ticket.by}>`
+        });
+      }
   })
   .catch(err => next(err));
 });
