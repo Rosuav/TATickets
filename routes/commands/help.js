@@ -12,7 +12,7 @@ router.post('/', (req, res, next) => {
     case 'username':
       return res.json({
         response_type: "ephemeral",
-        text:`${user_id} - ${text}`
+        text:`${user_id} - ${user_name}`
       });
     case 'channel':
       return res.json({
