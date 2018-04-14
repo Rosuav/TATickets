@@ -6,7 +6,7 @@ const router = express.Router();
 
 const { Mentor, Ticket } = require('../../models');
 
-router.post('/help', (req, res, next) => {
+router.post('/', (req, res, next) => {
   const {channel_id, text, user_name, user_id, response_url} = req.body;
   switch(text){
     case 'username':
