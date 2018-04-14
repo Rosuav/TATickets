@@ -7,9 +7,9 @@
     "start": "node index.js",
     "test": "NODE_ENV=test nyc --reporter=lcov mocha --recursive --exit",
     "deploy": "now -e NODE_ENV=production -e DATABASE_URL=$DATABASE_URL -t $NOW_TOKEN --team $TEAM_NAME -p --npm",
-    "alias": "now alias -t $NOW_TOKEN"
+    "alias": "now alias -t $NOW_TOKEN --team $TEAM_NAME && now scale tf-tatickets.now.sh 1"
   },
-  "author": "",
+  "author": "Thinkful TAs",
   "license": "ISC",
   "dependencies": {
     "ascii-table": "0.0.9",
