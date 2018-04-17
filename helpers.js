@@ -1,4 +1,6 @@
 var AsciiTable = require('ascii-table');
+const { SLACK_VERIFICATION_TOKEN } = require('./config');
+
 
 const parseTextToNotiPrefs = (_text, channelId) => {
   const generateDay = (day, timeOfDay) => ({
@@ -99,8 +101,15 @@ const formatTicketMessage = ({user_name, issue, session, mentors = [], response_
   return slackResponse;
 };
 
+const vertificationTokenAuth = (req, res, next) => {
+  const { token } = req.body;
+  if(token !== SLACK_VERIFICATION_TOKEN) throw 'Unauthorized';
+  next();
+};
+
 module.exports = {
   parseTextToNotiPrefs,
   formatTicketMessage,
-  renderCalendar
+  renderCalendar,
+  vertificationTokenAuth
 };

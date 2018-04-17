@@ -10,9 +10,7 @@ const { Mentor, Ticket } = require('../../models');
 const { formatTicketMessage } = require('../../helpers');
 
 router.post('/', (req, res, next) => {
-  const {channel_id, user_name, response_url, text, token} = req.body;
-
-  if(token !== SLACK_VERIFICATION_TOKEN) throw 'Unauthorized';
+  const {channel_id, user_name, response_url, text} = req.body;
 
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');

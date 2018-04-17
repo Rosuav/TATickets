@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const { PORT, DATABASE_URL } = require('./config');
 const { Mentor, Ticket } = require('./models');
+const { vertificationTokenAuth } = require('./helpers');
 
 const mentors = require('./routes/mentors');
 const { next, notifications, queue, reviews, summary, support, help } = require('./routes/commands');
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use('/mentors', mentors);
 
 // Slack POST Routes
+app.use(vertificationTokenAuth);
 app.use('/support', support);
 app.use('/next', next);
 app.use('/notifications', notifications);
