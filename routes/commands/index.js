@@ -6,4 +6,4 @@ module.exports = {
   summary: require('./summary'),
   support: require('./support'),
   help: require('./help')
-}
+};

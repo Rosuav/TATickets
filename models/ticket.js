@@ -17,12 +17,12 @@ const ticketSchema = mongoose.Schema({
     required: true
   },
   mentor: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Mentor'
-	},
-	review: {
-		type: String
-	},
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Mentor'
+  },
+  review: {
+    type: String
+  },
   colors: [
     {
       student: {type: String },
