@@ -10,18 +10,31 @@ const moment = require('moment-timezone');
 
 const { Mentor, Ticket } = require('../../models');
 
+const { SLACK_VERIFICATION_TOKEN } = require('../../config')
+
 const expect = chai.expect;
 
 chai.use(chaiHttp);
 
 describe('TATickets - /help', function() {
 	describe('POST /help', function() {
-		const slackRequest = {
+		const slackRequestWithoutToken = {
 			channel_id: 'G9AJF01BL',
 			user_name: 'SallyStudent',
       user_id: '123456789',
 			response_url: 'http://localhost:8080/test'
 		};
+
+    const slackRequest = Object.assign({}, slackRequestWithoutToken, {
+      token: SLACK_VERIFICATION_TOKEN
+    })
+
+    it('should reject unathorized requests', function() {
+			return chai.request(app).post('/help').send(slackRequestWithoutToken)
+				.then(function(res) {
+        expect(res).to.have.status(401);
+  		})
+		});
 
 		it('can provide help with a link to the readme', function() {
 			return chai.request(app).post('/help').send(slackRequest)

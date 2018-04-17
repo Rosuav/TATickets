@@ -3,12 +3,16 @@ const moment = require('moment-timezone');
 const axios = require('axios');
 
 const router = express.Router();
+const { SLACK_VERIFICATION_TOKEN } = require('../../config');
 
 const { Mentor } = require('../../models');
 const { parseTextToNotiPrefs, renderCalendar } = require('../../helpers');
 
 router.post('/', (req, res, next) => {
-  const {channel_id, user_name, response_url, text} = req.body;
+  const {channel_id, user_name, response_url, text, token} = req.body;
+
+  if(token !== SLACK_VERIFICATION_TOKEN) throw 'Unauthorized';
+
   let mentor;
 
   Mentor.findOne({slackUsername: user_name})

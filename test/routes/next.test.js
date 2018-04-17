@@ -7,6 +7,7 @@ const sinon = require('sinon');
 const axios = require('axios');
 
 const moment = require('moment-timezone');
+const { SLACK_VERIFICATION_TOKEN } = require('../../config');
 
 const { Mentor, Ticket } = require('../../models');
 
@@ -31,6 +32,19 @@ describe('TATickets - /next', function() {
   });
 
   describe('POST /next', function() {
+    it('should reject unathorized requests', function() {
+      return chai.request(app).post('/next').send({
+        channel_id: 'G9AJF01BL',
+        user_name: 'mentor3',
+        response_url: 'http://localhost:8080/test',
+        token: 'actualtoken!!!'
+      })
+        .then(function(res) {
+          expect(res).to.have.status(401);
+          expect(postStub.firstCall).to.equal(null);
+  		});
+    });
+
     it('can assign a ticket to a mentor', function() {
       let slackRequest;
       let mentor;
@@ -39,7 +53,8 @@ describe('TATickets - /next', function() {
         slackRequest = {
           channel_id: 'G9AJF01BL',
           user_name: mentor.slackUsername,
-          response_url: 'http://localhost:8080/test'
+          response_url: 'http://localhost:8080/test',
+          token: SLACK_VERIFICATION_TOKEN
         };
         return chai.request(app).post('/next').send(slackRequest);
       }).then(function(res) {
@@ -77,7 +92,8 @@ describe('TATickets - /next', function() {
           channel_id: 'G9AJF01BL',
           user_name: mentor.slackUsername,
           response_url: 'http://localhost:8080/test',
-          text: 'silent'
+          text: 'silent',
+          token: SLACK_VERIFICATION_TOKEN
         };
         return chai.request(app).post('/next').send(slackRequest);
       }).then(function(res) {
@@ -99,7 +115,8 @@ describe('TATickets - /next', function() {
         const slackRequest = {
           channel_id: 'G9AJF01BL',
           user_name: mentor.slackUsername,
-          response_url: 'http://localhost:8080/test'
+          response_url: 'http://localhost:8080/test',
+          token: SLACK_VERIFICATION_TOKEN
         };
         return chai.request(app).post('/next').send(slackRequest);
       }).then(function(res) {
@@ -117,7 +134,8 @@ describe('TATickets - /next', function() {
         const slackRequest = {
           channel_id: 'G9AJF01BL',
           user_name: 'student1000',
-          response_url: 'http://localhost:8080/test'
+          response_url: 'http://localhost:8080/test',
+          token: SLACK_VERIFICATION_TOKEN
         };
 
         return chai.request(app).post('/next').send(slackRequest);

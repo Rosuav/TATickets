@@ -7,3 +7,5 @@ exports.DATABASE_URL = process.env.DATABASE_URL ||
 //for testing
 exports.TEST_MONGODB_URI = process.env.TEST_MONGODB_URI ||
                       'mongodb://localhost/test-tftatickets';
+
+exports.SLACK_VERIFICATION_TOKEN = process.env.SLACK_VERIFICATION_TOKEN || 'myCoolTokenJustForTestingPurposes';

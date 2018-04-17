@@ -6,7 +6,9 @@ const sinon = require('sinon');
 
 const axios = require('axios');
 
-const {Mentor} = require('../../models');
+const { Mentor } = require('../../models');
+const { SLACK_VERIFICATION_TOKEN } = require('../../config');
+
 
 const expect = chai.expect;
 
@@ -24,6 +26,17 @@ describe('TATickets - /notifications', function() {
   });
 
   describe('POST /notifications', function () {
+    it('should reject unathorized requests', function() {
+      return chai.request(app).post('/notifications').send({
+        channel_id: 'G9AJF01BL',
+        user_name: 'mentor3',
+        response_url: 'http://localhost:8080/test',
+      })
+        .then(function(res) {
+          expect(res).to.have.status(401);
+        });
+    });
+
     let mentor;
     it('should add notifications to mornings', function () {
       return Mentor.findOne().then(_mentor => {
@@ -33,7 +46,8 @@ describe('TATickets - /notifications', function() {
             channel_id: 'G9AJF01BL',
             user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
-            text: 'mornings'
+            text: 'mornings',
+            token: SLACK_VERIFICATION_TOKEN
           });
       }).then(res => {
         expect(res).to.have.status(200);
@@ -61,7 +75,8 @@ describe('TATickets - /notifications', function() {
             channel_id: 'G9AJF01BL',
             user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
-            text: 'afternoons'
+            text: 'afternoons',
+            token: SLACK_VERIFICATION_TOKEN
           });
       }).then(res => {
         expect(res).to.have.status(200);
@@ -89,7 +104,8 @@ describe('TATickets - /notifications', function() {
             channel_id: 'G9AJF01BL',
             user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
-            text: 'off'
+            text: 'off',
+            token: SLACK_VERIFICATION_TOKEN
           });
       }).then(res => {
         expect(res).to.have.status(200);
@@ -110,7 +126,8 @@ describe('TATickets - /notifications', function() {
           channel_id: 'G9AJF01BL',
           user_name: 'joeyStudent1000',
           response_url: 'http://localhost:8080/test',
-          text: 'off'
+          text: 'off',
+          token: SLACK_VERIFICATION_TOKEN
         }).then(res => {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -128,7 +145,8 @@ describe('TATickets - /notifications', function() {
             channel_id: 'G9AJF01BL',
             user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
-            text: 'view'
+            text: 'view',
+            token: SLACK_VERIFICATION_TOKEN
           });
       }).then(res => {
         expect(res).to.have.status(200);
@@ -147,7 +165,8 @@ describe('TATickets - /notifications', function() {
             channel_id: 'G9AJF01BL',
             user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
-            text: ''
+            text: '',
+            token: SLACK_VERIFICATION_TOKEN
           });
       }).then(res => {
         expect(res).to.have.status(200);
@@ -166,7 +185,8 @@ describe('TATickets - /notifications', function() {
             channel_id: 'G9AJF01BL',
             user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
-            text: 'a89hwtnjkg'
+            text: 'a89hwtnjkg',
+            token: SLACK_VERIFICATION_TOKEN
           });
       }).then(res => {
         expect(res).to.have.status(200);

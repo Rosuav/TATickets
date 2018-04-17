@@ -28,7 +28,10 @@ app.use('/summary', summary);
 app.use('/help', help);
 
 app.use((err, req, res, next) => {
-  res.status(err.status || 200);
+
+  if (err === 'Unauthorized') res.status(401);
+  else res.status(200);
+
   res.json({
     response_type: 'ephemeral',
     text: err

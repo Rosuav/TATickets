@@ -7,6 +7,8 @@ const sinon = require('sinon');
 const axios = require('axios');
 
 const moment = require('moment');
+const { SLACK_VERIFICATION_TOKEN } = require('../../config');
+
 
 const { Mentor, Ticket } = require('../../models');
 
@@ -29,13 +31,26 @@ describe('TATickets - /support', function () {
   });
 
   describe('POST /support', function () {
+    it('should reject unathorized requests', function() {
+      return chai.request(app).post('/support').send({
+        channel_id: 'G9AJF01BL',
+        user_name: 'student3',
+        response_url: 'http://localhost:8080/test',
+        token: 'letmein ;-)'
+      })
+        .then(function(res) {
+          expect(res).to.have.status(401);
+        });
+    });
+
     it('should create and return a new ticket with all the required fields', function () {
       const sessionUrl = 'https://sessions.thinkful.com/test';
       const newTicket = {
         channel_id: 'G9AJF01BL',
         user_name: 'TestUser',
         response_url: 'http://localhost:8080/test',
-        text: `${sessionUrl} This is just a test`
+        text: `${sessionUrl} This is just a test`,
+        token: SLACK_VERIFICATION_TOKEN
       };
       let body;
       return chai.request(app)
@@ -64,7 +79,8 @@ describe('TATickets - /support', function () {
         channel_id: 'G9AJF01BL',
         user_name: 'TestUser',
         response_url: 'http://localhost:8080/test',
-        text: 'https://sessions.thinkful.com/test'
+        text: 'https://sessions.thinkful.com/test',
+        token: SLACK_VERIFICATION_TOKEN
       };
       let body;
       return chai.request(app)
@@ -86,7 +102,8 @@ describe('TATickets - /support', function () {
         channel_id: 'G9AJF01BL',
         user_name: 'TestUser',
         response_url: 'http://localhost:8080/test',
-        text: ''
+        text: '',
+        token: SLACK_VERIFICATION_TOKEN
       };
       let body;
       return chai.request(app)
@@ -110,7 +127,8 @@ describe('TATickets - /support', function () {
             channel_id: ticket.channelId,
             user_name: ticket.by,
             response_url: 'http://localhost:8080/test',
-            text: 'cancel'
+            text: 'cancel',
+            token: SLACK_VERIFICATION_TOKEN
           };
           let body;
           return chai.request(app)
@@ -157,7 +175,8 @@ describe('TATickets - /support', function () {
             channel_id: ticket.channelId,
             user_name: ticket.by,
             response_url: 'http://localhost:8080/test',
-            text: `${ticket.owlSession} ${ticket.issue}`
+            text: `${ticket.owlSession} ${ticket.issue}`,
+            token: SLACK_VERIFICATION_TOKEN
           };
           let body;
           return chai.request(app)
@@ -192,7 +211,8 @@ describe('TATickets - /support', function () {
           channel_id: 'G9AJF01BL',
           user_name: 'TestUser',
           response_url: 'http://localhost:8080/test',
-          text: ''
+          text: '',
+          token: SLACK_VERIFICATION_TOKEN
         };
         let body;
         return chai.request(app)
@@ -219,7 +239,8 @@ describe('TATickets - /support', function () {
           channel_id: 'G9AJF01BL',
           user_name: 'TestUser',
           response_url: 'http://localhost:8080/test',
-          text: ''
+          text: '',
+          token: SLACK_VERIFICATION_TOKEN
         };
         let body;
         return chai.request(app)
@@ -246,7 +267,8 @@ describe('TATickets - /support', function () {
           channel_id: 'G9AJF01BL',
           user_name: 'TestUser',
           response_url: 'http://localhost:8080/test',
-          text: ''
+          text: '',
+          token: SLACK_VERIFICATION_TOKEN
         };
         let body;
         return chai.request(app)
@@ -262,10 +284,6 @@ describe('TATickets - /support', function () {
             expect(body.text).to.equal('Oops! TA support is only available until <!date^1514845800^{time}|5:30PM Eastern>, in the meantime check out an open session: https://www.thinkful.com/open-sessions/qa-sessions/ !');
           });
       });
-
-
-
     });
-
   });
 });
