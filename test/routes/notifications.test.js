@@ -29,7 +29,7 @@ describe('TATickets - /notifications', function() {
     it('should reject unathorized requests', function() {
       return chai.request(app).post('/notifications').send({
         channel_id: 'G9AJF01BL',
-        user_name: 'mentor3',
+        user_id: 'US1000',
         response_url: 'http://localhost:8080/test',
       })
         .then(function(res) {
@@ -44,7 +44,7 @@ describe('TATickets - /notifications', function() {
         return chai.request(app).post('/notifications')
           .send({
             channel_id: 'G9AJF01BL',
-            user_name: mentor.slackUsername,
+            user_id: mentor.slackUserId,
             response_url: 'http://localhost:8080/test',
             text: 'mornings',
             token: SLACK_VERIFICATION_TOKEN
@@ -73,7 +73,7 @@ describe('TATickets - /notifications', function() {
         return chai.request(app).post('/notifications')
           .send({
             channel_id: 'G9AJF01BL',
-            user_name: mentor.slackUsername,
+            user_id: mentor.slackUserId,
             response_url: 'http://localhost:8080/test',
             text: 'afternoons',
             token: SLACK_VERIFICATION_TOKEN
@@ -97,12 +97,12 @@ describe('TATickets - /notifications', function() {
       });
     });
     it('should remove notifications', function () {
-      return Mentor.findOne({slackUsername: 'mentor4'}).then(_mentor => {
+      return Mentor.findOne({slackUserId: 'UMENTOR4'}).then(_mentor => {
         mentor = _mentor;
         return chai.request(app).post('/notifications')
           .send({
             channel_id: 'G9AJF01BL',
-            user_name: mentor.slackUsername,
+            user_id: mentor.slackUserId,
             response_url: 'http://localhost:8080/test',
             text: 'off',
             token: SLACK_VERIFICATION_TOKEN
@@ -124,7 +124,7 @@ describe('TATickets - /notifications', function() {
       return chai.request(app).post('/notifications')
         .send({
           channel_id: 'G9AJF01BL',
-          user_name: 'joeyStudent1000',
+          user_id: 'US1000',
           response_url: 'http://localhost:8080/test',
           text: 'off',
           token: SLACK_VERIFICATION_TOKEN
@@ -138,12 +138,12 @@ describe('TATickets - /notifications', function() {
         });
     });
     it('should display notifications with "view" command', function () {
-      return Mentor.findOne({slackUsername: 'mentor4'}).then(_mentor => {
+      return Mentor.findOne({slackUserId: 'UMENTOR4'}).then(_mentor => {
         mentor = _mentor;
         return chai.request(app).post('/notifications')
           .send({
             channel_id: 'G9AJF01BL',
-            user_name: mentor.slackUsername,
+            user_id: mentor.slackUserId,
             response_url: 'http://localhost:8080/test',
             text: 'view',
             token: SLACK_VERIFICATION_TOKEN
@@ -158,12 +158,12 @@ describe('TATickets - /notifications', function() {
       });
     });
     it('should display notifications if no parameter is provided', function () {
-      return Mentor.findOne({slackUsername: 'mentor4'}).then(_mentor => {
+      return Mentor.findOne({slackUserId: 'UMENTOR4'}).then(_mentor => {
         mentor = _mentor;
         return chai.request(app).post('/notifications')
           .send({
             channel_id: 'G9AJF01BL',
-            user_name: mentor.slackUsername,
+            user_id: mentor.slackUserId,
             response_url: 'http://localhost:8080/test',
             text: '',
             token: SLACK_VERIFICATION_TOKEN
@@ -178,12 +178,12 @@ describe('TATickets - /notifications', function() {
       });
     });
     it('can respond gracefully to bad inputs', function () {
-      return Mentor.findOne({slackUsername: 'mentor4'}).then(_mentor => {
+      return Mentor.findOne({slackUserId: 'UMENTOR4'}).then(_mentor => {
         mentor = _mentor;
         return chai.request(app).post('/notifications')
           .send({
             channel_id: 'G9AJF01BL',
-            user_name: mentor.slackUsername,
+            user_id: mentor.slackUserId,
             response_url: 'http://localhost:8080/test',
             text: 'a89hwtnjkg',
             token: SLACK_VERIFICATION_TOKEN

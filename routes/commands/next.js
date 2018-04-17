@@ -10,13 +10,13 @@ const { Mentor, Ticket } = require('../../models');
 const { formatTicketMessage } = require('../../helpers');
 
 router.post('/', (req, res, next) => {
-  const {channel_id, user_name, response_url, text} = req.body;
+  const {channel_id, user_name, user_id, response_url, text} = req.body;
 
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
   let _mentor;
 
-  Mentor.findOne({ slackUsername: user_name })
+  Mentor.findOne({ slackUserId: user_id })
     .then(mentor => {
       if(!mentor) return Promise.reject('Only registered mentors could call next');
       _mentor = mentor;
@@ -43,7 +43,7 @@ router.post('/', (req, res, next) => {
       } else {
         res.status(200).json(
           formatTicketMessage({
-            user_name: ticket.by,
+            user_id: ticket.by,
             issue: ticket.issue,
             session: ticket.owlSession,
             response_type: 'ephemeral'
@@ -51,7 +51,7 @@ router.post('/', (req, res, next) => {
 
         axios.post(response_url, {
           response_type: 'in_channel',
-          text: `<@${user_name}> incoming <@${ticket.by}>`
+          text: `<@${user_id}> incoming <@${ticket.by}>`
         });
       }
     })

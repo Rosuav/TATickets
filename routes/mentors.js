@@ -10,7 +10,7 @@ router.post('/', (req, res, next) => {
       lastName: req.body.lastName
     },
     email: req.body.email,
-    slackUsername: req.body.username
+    slackUserId: req.body.slackUserId
   })
     .then(mentor => res.status(201).json(mentor))
     .catch(err => next(err));

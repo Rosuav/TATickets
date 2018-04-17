@@ -9,11 +9,11 @@ const { Mentor } = require('../../models');
 const { parseTextToNotiPrefs, renderCalendar } = require('../../helpers');
 
 router.post('/', (req, res, next) => {
-  const {channel_id, user_name, response_url, text} = req.body;
+  const {channel_id, user_name, user_id, response_url, text} = req.body;
 
   let mentor;
 
-  Mentor.findOne({slackUsername: user_name})
+  Mentor.findOne({slackUserId: user_id})
     .then(_mentor => {
       mentor = _mentor;
 

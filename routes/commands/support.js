@@ -10,7 +10,7 @@ const { Mentor, Ticket } = require('../../models');
 const { formatTicketMessage } = require('../../helpers');
 
 router.post('/', (req, res, next) => {
-  const {channel_id, user_name, response_url, text} = req.body;
+  const {channel_id, user_name, user_id, response_url, text} = req.body;
 
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
@@ -21,7 +21,7 @@ router.post('/', (req, res, next) => {
   let issue = sentences.filter(sentence => sentence !== session).join(' ');
   if (text === 'cancel' || text === 'remove') {
     Ticket.findOne({
-      by: user_name,
+      by: user_id,
       channelId: channel_id,
       mentor: null,
       isActive: true,
@@ -74,7 +74,7 @@ router.post('/', (req, res, next) => {
     if (ticket) {
       return Promise.reject('The session url has been already pushed to the queue, a mentor will reach you out soon');
     } else {
-      return Ticket.create({issue, owlSession: session, by: user_name, channelId: channel_id});
+      return Ticket.create({issue, owlSession: session, by: user_id, channelId: channel_id});
     }
   }).then(ticket => {
     const m = moment().tz('America/New_York');
@@ -95,7 +95,7 @@ router.post('/', (req, res, next) => {
     });
   }).then(mentors => {
     res.status(200).json({response_type: 'ephemeral', text: 'Request successfully pushed to the queue'});
-    axios.post(response_url, formatTicketMessage({user_name, issue, session, mentors: mentors.map(mentor => mentor.slackUsername)}));
+    axios.post(response_url, formatTicketMessage({user_id, issue, session, mentors: mentors.map(mentor => mentor.slackUserId)}));
   }).catch(err => next(err));
 });
 

@@ -23,7 +23,7 @@ describe('TATickets - /mentors', function () {
           expect(res.body).to.have.length(data.length);
           res.body.forEach(item => {
             expect(item).to.be.a('object');
-            expect(item).to.include.keys('name','isActive','email','slackUsername');
+            expect(item).to.include.keys('name','isActive','email','slackUsername', 'slackUserId');
           });
         });
     });
@@ -35,7 +35,7 @@ describe('TATickets - /mentors', function () {
         firstName: 'Mentor',
         lastName: 'Test',
         email: 'mentortest@mail.com',
-        username: 'mentortest'
+        slackUserId: 'UMENTORTEST'
       };
       let body;
       return chai.request(app)
@@ -46,13 +46,13 @@ describe('TATickets - /mentors', function () {
           expect(res).to.have.status(201);
           expect(res).to.be.json;
           expect(body).to.be.a('object');
-          expect(body).to.include.keys('name', 'email', 'slackUsername', 'isActive');
+          expect(body).to.include.keys('name', 'email', 'slackUserId', 'isActive');
           return Mentor.findById(body._id);
         })
         .then(data => {
           expect(body.name.firstName).to.equal(data.name.firstName);
           expect(body.email).to.equal(data.email);
-          expect(body.slackUsername).to.equal(data.slackUsername);
+          expect(body.slackUserId).to.equal(data.slackUserId);
           expect(body.isActive).to.equal(data.isActive);
         });
     });

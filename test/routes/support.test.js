@@ -35,6 +35,7 @@ describe('TATickets - /support', function () {
       return chai.request(app).post('/support').send({
         channel_id: 'G9AJF01BL',
         user_name: 'student3',
+        user_id: 'USTUD3',
         response_url: 'http://localhost:8080/test',
         token: 'letmein ;-)'
       })
@@ -48,6 +49,7 @@ describe('TATickets - /support', function () {
       const newTicket = {
         channel_id: 'G9AJF01BL',
         user_name: 'TestUser',
+        user_id: 'UTESTUSER',
         response_url: 'http://localhost:8080/test',
         text: `${sessionUrl} This is just a test`,
         token: SLACK_VERIFICATION_TOKEN
@@ -69,7 +71,7 @@ describe('TATickets - /support', function () {
           expect(postStub.firstCall.args[1]).to.be.an('object');
           expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
           expect(postStub.firstCall.args[1].attachments[0].fallback).to.equal(
-            `<@${newTicket.user_name}> issued: This is just a test. In ${sessionUrl} <@mentor4> <@mentor5>`
+            `<@${newTicket.user_id}> issued: This is just a test. In ${sessionUrl} <@UMENTOR4> <@UMENTOR5>`
           );
         });
     });
@@ -78,6 +80,7 @@ describe('TATickets - /support', function () {
       const newTicket = {
         channel_id: 'G9AJF01BL',
         user_name: 'TestUser',
+        user_id: 'UTESTUSER',
         response_url: 'http://localhost:8080/test',
         text: 'https://sessions.thinkful.com/test',
         token: SLACK_VERIFICATION_TOKEN
@@ -101,6 +104,7 @@ describe('TATickets - /support', function () {
       const newTicket = {
         channel_id: 'G9AJF01BL',
         user_name: 'TestUser',
+        user_id: 'UTESTUSER',
         response_url: 'http://localhost:8080/test',
         text: '',
         token: SLACK_VERIFICATION_TOKEN
@@ -125,7 +129,7 @@ describe('TATickets - /support', function () {
         .then(ticket => {
           const testTicket = {
             channel_id: ticket.channelId,
-            user_name: ticket.by,
+            user_id: ticket.by,
             response_url: 'http://localhost:8080/test',
             text: 'cancel',
             token: SLACK_VERIFICATION_TOKEN
@@ -173,7 +177,7 @@ describe('TATickets - /support', function () {
           ticket.save();
           const newTicket = {
             channel_id: ticket.channelId,
-            user_name: ticket.by,
+            user_id: ticket.by,
             response_url: 'http://localhost:8080/test',
             text: `${ticket.owlSession} ${ticket.issue}`,
             token: SLACK_VERIFICATION_TOKEN
@@ -209,7 +213,7 @@ describe('TATickets - /support', function () {
 
         const newTicket = {
           channel_id: 'G9AJF01BL',
-          user_name: 'TestUser',
+          user_id: 'UTESTUSER',
           response_url: 'http://localhost:8080/test',
           text: '',
           token: SLACK_VERIFICATION_TOKEN
@@ -237,7 +241,7 @@ describe('TATickets - /support', function () {
 
         const newTicket = {
           channel_id: 'G9AJF01BL',
-          user_name: 'TestUser',
+          user_id: 'UTESTUSER',
           response_url: 'http://localhost:8080/test',
           text: '',
           token: SLACK_VERIFICATION_TOKEN
@@ -265,7 +269,7 @@ describe('TATickets - /support', function () {
 
         const newTicket = {
           channel_id: 'G9AJF01BL',
-          user_name: 'TestUser',
+          user_id: 'UTESTUSER',
           response_url: 'http://localhost:8080/test',
           text: '',
           token: SLACK_VERIFICATION_TOKEN

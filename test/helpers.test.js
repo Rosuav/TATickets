@@ -50,43 +50,43 @@ describe('Helper functions', function() {
   describe('parseTextToNotificationPreferences()', function() {
     it('should build response for slack', function() {
       expect(formatTicketMessage({
-        user_name: 'joeStudent1000',
+        user_id: 'UJS1000',
         issue: 'We are having too much fun',
         session: 'https://sessions.thinkful.com/fun',
-        mentors: ['mentor1', 'mentor3']
+        mentors: ['UMENTOR1', 'UMENTOR2']
       })).to.deep.equal({
         'response_type': 'in_channel',
         'attachments': [
           {
-            'fallback': '<@joeStudent1000> issued: We are having too much fun. In https://sessions.thinkful.com/fun <@mentor1> <@mentor3>',
-            'title': '<@joeStudent1000> issued:',
+            'fallback': '<@UJS1000> issued: We are having too much fun. In https://sessions.thinkful.com/fun <@UMENTOR1> <@UMENTOR2>',
+            'title': '<@UJS1000> issued:',
             'text': 'We are having too much fun',
             'fields': [
               {
                 'value': 'https://sessions.thinkful.com/fun'
               },
             ],
-            'footer': ':bell: <@mentor1> <@mentor3>',
+            'footer': ':bell: <@UMENTOR1> <@UMENTOR2>',
           }
         ]
       });
     });
     it('should not display notification field if there are none', function() {
       expect(formatTicketMessage({
-        user_name: 'joeStudent1000',
+        user_id: 'UJS1000',
         issue: 'We are having too much fun',
         session: 'https://sessions.thinkful.com/fun',
         mentors: [],
       }).attachments[0].fields.length).to.equal(1);
       expect(formatTicketMessage({
-        user_name: 'joeStudent1000',
+        user_id: 'UJS1000',
         issue: 'We are having too much fun',
         session: 'https://sessions.thinkful.com/fun',
       }).attachments[0].fields.length).to.equal(1);
     });
     it('should be able to make ephemeral responses', function() {
       expect(formatTicketMessage({
-        user_name: 'joeStudent1000',
+        user_id: 'UJS1000',
         issue: 'We are having too much fun',
         session: 'https://sessions.thinkful.com/fun',
         response_type: 'ephemeral'
