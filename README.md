@@ -101,6 +101,7 @@ You can get pretty far writing tests, the Slack API is relatively straightforwar
   * [ngrok](https://api.slack.com/tutorials/tunneling-with-ngrok) for tunneling
 
 ##### Get started
+  * Create an `.env` file with `SLACK_VERIFICATION_TOKEN=yourSlackVerificationTokenHere`
   * Start the server, `npm start`
   * Run `ngrok http 8080` in another window
   * Create Slack commands through Slack's website with the url that ngrok gives you, for example:
