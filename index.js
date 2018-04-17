@@ -26,8 +26,8 @@ app.use('/support', support);
 app.use('/next', next);
 app.use('/notifications', notifications);
 app.use('/queue', queue);
-app.use('/reviews', reviews);
-app.use('/summary', summary);
+// app.use('/reviews', reviews);
+// app.use('/summary', summary);
 app.use('/help', help);
 
 app.use((err, req, res, next) => {
