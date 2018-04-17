@@ -2,7 +2,9 @@
 
 ## Slack Commands
 
-### `/ta-support`
+### Commands for Students
+
+#### `/ta-support`
 
 Ask for help with the `/ta-support` command. Here are some examples:
 
@@ -15,13 +17,15 @@ Ask for help with the `/ta-support` command. Here are some examples:
 
     > `/ta-support cancel`
 
-### `/ticket-next`
+### Commands for Staff
+
+#### `/ticket-next`
 
 If you are a registered mentor, you can claim tickets from students with the `/ticket-next` command (without arguments). (Want to get registered? Ask Casey or Wences)
 
 * Dequeue a ticket silently with `/ticket-next silent`
 
-### `/ticket-alerts`
+#### `/ticket-alerts`
 
 If you are a registered mentor, you can sign up for notifications for the specific days and times (and channels, even multiple!) that you work. Support requests in your chosen time slots will mention you.
 
@@ -54,9 +58,51 @@ If you are a registered mentor, you can sign up for notifications for the specif
 
     > `/ticket-alerts view`
 
+#### `/ticket-help`
 
-## Notes for development:
+* Without arguments, get a link to this readme!
+* Get your slack [username](https://api.slack.com/changelog/2017-09-the-one-about-usernames) and id, or the channel id
 
-- Slacks Slash Command API, and therefore parts of this app are not very RESTful. Slack can only makes `POST` requests in response to a command, and expects a `200` response, even if you want to show the user an error.
+      > `/ticket-help username`
 
-- The command keywords (`/ta-support`) are only editable in the Slack App settings, and often the names differ from the routes they hit here.
+      > `/ticket-help channel`
+
+
+## Development
+
+We would love to have you contribute! Fork the repo!
+
+### Notes:
+
+- The [Slacks Slash Command API](https://api.slack.com/slash-commands), and therefore parts of this app are not very RESTful. Slack can only makes `POST` requests in response to a command, and expects a `200` response, even if you want to show the user an error.
+
+- The command keywords (like `/ta-support`) are only editable in the Slack App settings, and often the names differ from the routes they hit here.
+
+### Requirements
+
+  * NodeJS
+  * MongoDB
+
+### Get started
+
+  * Clone the repo
+  * Run `npm install`
+  * Run `mongod` in another window
+  * Run `npm test` in another window (everything green?)
+  * Run `npm start` in another window to start the server
+
+#### Local Development with Slack
+
+You can get pretty far writing tests, the Slack API is relatively straightforward, but it's a good idea to test it out manually with a real Slack workspace
+
+##### Requirements
+
+  * A Slack workspace and app that you control (I set one up exclusively for testing Slack Apps)
+  * [ngrok](https://api.slack.com/tutorials/tunneling-with-ngrok) for tunneling
+
+##### Get started
+  * Start the server, `npm start`
+  * Run `ngrok http 8080` in another window
+  * Create Slack commands through Slack's website with the url that ngrok gives you, for example:
+    * Command: `/ta-support`
+    * Request URL: `http://12345678.ngrok.io/support`
