@@ -1,6 +1,6 @@
 const chai = require('chai');
 
-const { parseTextToNotiPrefs, formatTicketMessage } = require('../helpers.js');
+const { parseTextToNotiPrefs, formatTicketMessage } = require('../helpers');
 
 const expect = chai.expect;
 
