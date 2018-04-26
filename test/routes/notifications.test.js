@@ -30,6 +30,7 @@ describe('TATickets - /notifications', function() {
       return chai.request(app).post('/notifications').send({
         channel_id: 'G9AJF01BL',
         user_id: 'US1000',
+        user_name: 'Mentor3',
         response_url: 'http://localhost:8080/test',
       })
         .then(function(res) {
@@ -45,6 +46,7 @@ describe('TATickets - /notifications', function() {
           .send({
             channel_id: 'G9AJF01BL',
             user_id: mentor.slackUserId,
+            user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
             text: 'mornings',
             token: SLACK_VERIFICATION_TOKEN
@@ -74,6 +76,7 @@ describe('TATickets - /notifications', function() {
           .send({
             channel_id: 'G9AJF01BL',
             user_id: mentor.slackUserId,
+            user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
             text: 'afternoons',
             token: SLACK_VERIFICATION_TOKEN
@@ -103,6 +106,7 @@ describe('TATickets - /notifications', function() {
           .send({
             channel_id: 'G9AJF01BL',
             user_id: mentor.slackUserId,
+            user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
             text: 'off',
             token: SLACK_VERIFICATION_TOKEN
@@ -125,6 +129,7 @@ describe('TATickets - /notifications', function() {
         .send({
           channel_id: 'G9AJF01BL',
           user_id: 'US1000',
+          user_name: 'JStudent',
           response_url: 'http://localhost:8080/test',
           text: 'off',
           token: SLACK_VERIFICATION_TOKEN
@@ -144,6 +149,7 @@ describe('TATickets - /notifications', function() {
           .send({
             channel_id: 'G9AJF01BL',
             user_id: mentor.slackUserId,
+            user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
             text: 'view',
             token: SLACK_VERIFICATION_TOKEN
@@ -164,6 +170,7 @@ describe('TATickets - /notifications', function() {
           .send({
             channel_id: 'G9AJF01BL',
             user_id: mentor.slackUserId,
+            user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
             text: '',
             token: SLACK_VERIFICATION_TOKEN
@@ -184,6 +191,7 @@ describe('TATickets - /notifications', function() {
           .send({
             channel_id: 'G9AJF01BL',
             user_id: mentor.slackUserId,
+            user_name: mentor.slackUsername,
             response_url: 'http://localhost:8080/test',
             text: 'a89hwtnjkg',
             token: SLACK_VERIFICATION_TOKEN

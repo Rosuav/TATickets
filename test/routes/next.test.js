@@ -35,6 +35,7 @@ describe('TATickets - /next', function() {
       return chai.request(app).post('/next').send({
         channel_id: 'G9AJF01BL',
         user_id: 'UMENTOR3',
+        user_name: 'Mentor3',
         response_url: 'http://localhost:8080/test',
         token: 'actualtoken!!!'
       })
@@ -52,6 +53,7 @@ describe('TATickets - /next', function() {
         slackRequest = {
           channel_id: 'G9AJF01BL',
           user_id: mentor.slackUserId,
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           token: SLACK_VERIFICATION_TOKEN
         };
@@ -90,6 +92,7 @@ describe('TATickets - /next', function() {
         slackRequest = {
           channel_id: 'G9AJF01BL',
           user_id: mentor.slackUserId,
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           text: 'silent',
           token: SLACK_VERIFICATION_TOKEN
@@ -114,6 +117,7 @@ describe('TATickets - /next', function() {
         const slackRequest = {
           channel_id: 'G9AJF01BL',
           user_id: mentor.slackUserId,
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           token: SLACK_VERIFICATION_TOKEN
         };
@@ -133,6 +137,7 @@ describe('TATickets - /next', function() {
         const slackRequest = {
           channel_id: 'G9AJF01BL',
           user_id: 'US1000',
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           token: SLACK_VERIFICATION_TOKEN
         };

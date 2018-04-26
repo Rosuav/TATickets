@@ -26,6 +26,7 @@ describe('TATickets - /queue', function() {
         const slackRequest = {
           channel_id: 'G9AJF01BL',
           user_id: 'UMENTOR2',
+          user_name: 'Mentor2',
           response_url: 'http://localhost:8080/test',
           token: SLACK_VERIFICATION_TOKEN
         };
@@ -44,6 +45,7 @@ describe('TATickets - /queue', function() {
       const slackRequest = {
         channel_id: 'FF014445',
         user_id: 'UMENTOR2',
+        user_name: 'Mentor2',
         response_url: 'http://localhost:8080/test',
         token: SLACK_VERIFICATION_TOKEN
       };
@@ -61,6 +63,7 @@ describe('TATickets - /queue', function() {
     it('rejects requests without channel id', function() {
       const slackRequest = {
         user_id: 'UMENTOR2',
+        user_name: 'Mentor2',
         response_url: 'http://localhost:8080/test',
         token: SLACK_VERIFICATION_TOKEN
       };
@@ -72,13 +75,14 @@ describe('TATickets - /queue', function() {
           expect(body).to.be.a('object');
           expect(body).to.include.keys('response_type', 'text');
           expect(body.response_type).to.equal('ephemeral');
-          expect(body.text).to.equal('A channel ID is required.');
+          expect(body.text).to.equal('Hmm... Something went wrong, and it\'s on Slack\'s end (400)');
         });
     });
     it('rejects unauthorized requests', function() {
       const slackRequest = {
         channel_id: 'G9AJF01BL',
         user_id: 'UMENTOR2',
+        user_name: 'Mentor2',
         response_url: 'http://localhost:8080/test',
       };
       return chai.request(app).post('/queue').send(slackRequest)
