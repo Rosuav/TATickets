@@ -57,4 +57,49 @@ describe('TATickets - /mentors', function () {
         });
     });
   });
+  describe('PUT /mentors', function () {
+    it('should update a mentor', function () {
+      const newItem = {
+        firstName: 'Mentor',
+        lastName: 'Test',
+        email: 'mentortest@mail.com',
+        slackUserId: 'UMENTORTEST'
+      };
+      let body;
+      return Mentor.findOne().then(function(mentor) {
+        return chai.request(app)
+          .put('/mentors/' + mentor._id)
+          .send(newItem);
+      })
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('name', 'email', 'slackUserId', 'isActive');
+          expect(body.name.firstName).to.equal(newItem.firstName);
+          expect(body.email).to.equal(newItem.email);
+          expect(body.slackUserId).to.equal(newItem.slackUserId);
+        });
+    });
+    it('should update a mentor\'s slackUserId', function () {
+      const newItem = {
+        slackUserId: 'UMENTORTEST'
+      };
+      let body;
+      return Mentor.findOne().then(function(mentor) {
+        return chai.request(app)
+          .put('/mentors/' + mentor._id)
+          .send(newItem);
+      })
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('name', 'email', 'slackUserId', 'isActive');
+          expect(body.slackUserId).to.equal(newItem.slackUserId);
+        });
+    });
+  });
 });

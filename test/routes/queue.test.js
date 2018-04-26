@@ -33,12 +33,13 @@ describe('TATickets - /queue', function() {
         return chai.request(app).post('/queue').send(slackRequest);
       }).then(function(res) {
         const body = res.body;
-  			expect(res).to.have.status(200);
-  			expect(res).to.be.json;
-  			expect(body).to.be.a('object');
-  			expect(body).to.include.keys('response_type', 'text');
-  			expect(body.response_type).to.equal('ephemeral');
-  			expect(body.text).to.equal('[1] https://sessions.thinkful.com/test8 reported by <@UTEST8>.\n[2] https://sessions.thinkful.com/test10 reported by <@UTEST10>.\n');
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(body).to.be.a('object');
+        expect(body).to.include.keys('response_type', 'text');
+        expect(body.response_type).to.equal('ephemeral');
+        expect(body.text).to.equal('[1] https://sessions.thinkful.com/test8 reported by <@UTEST8>.\n[2] https://sessions.thinkful.com/test10 reported by <@UTEST10>.\n');
+        // TODO: should check that the ticket make the right text
       });
     });
     it('provides feedback if there are no sessions', function() {
@@ -87,7 +88,6 @@ describe('TATickets - /queue', function() {
       };
       return chai.request(app).post('/queue').send(slackRequest)
         .then(function(res) {
-          const body = res.body;
           expect(res).to.have.status(401);
         });
     });

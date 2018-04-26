@@ -10,7 +10,7 @@ const moment = require('moment');
 const { SLACK_VERIFICATION_TOKEN } = require('../../config');
 
 
-const { Mentor, Ticket } = require('../../models');
+const { Ticket } = require('../../models');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
