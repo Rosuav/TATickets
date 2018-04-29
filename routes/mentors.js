@@ -12,14 +12,14 @@ router.post('/', (req, res, next) => {
     email: req.body.email,
     slackUsername: req.body.username
   })
-  .then(mentor => res.status(201).json(mentor))
-  .catch(err => next(err));
+    .then(mentor => res.status(201).json(mentor))
+    .catch(err => next(err));
 });
 
 router.get('/', (req, res, next) => {
   Mentor.find()
-  .then(mentors => res.json(mentors))
-  .catch(err => next(err));
+    .then(mentors => res.json(mentors))
+    .catch(err => next(err));
 });
 
 module.exports = router;

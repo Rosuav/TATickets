@@ -9,7 +9,7 @@ router.post('/', (req, res) => {
   const today = moment().startOf('day');
   const tomorrow = moment(today).add(1, 'days');
 
-  if(text === "channel"){
+  if(text === 'channel'){
     return res.send(`Channel ID: *${channel_id}*`);
   }
 
@@ -21,14 +21,14 @@ router.post('/', (req, res) => {
     reviewed_at: { $exists: true },
     isActive: true
   })
-  .populate('mentor')
-  .sort('created_at')
-  .then(tickets => {
-    res.status(200).json({
-      response_type: "ephemeral",
-      text: tickets.map(ticket => `${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')
+    .populate('mentor')
+    .sort('created_at')
+    .then(tickets => {
+      res.status(200).json({
+        response_type: 'ephemeral',
+        text: tickets.map(ticket => `${ticket.colors.map(item => `${item.student}:${item.color}`).join('/')} - ${ticket.review}\n`).join('')
+      });
     });
-  })
-})
+});
 
 module.exports = router;
