@@ -5,6 +5,8 @@ const chaiHttp = require('chai-http');
 
 const { Mentor } = require('../../models');
 
+const { SLACK_VERIFICATION_TOKEN } = require('../../config');
+
 const expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -13,7 +15,8 @@ describe('TATickets - /mentors', function () {
   describe('GET /mentors', function () {
     it('should return the correct number of mentors', function () {
       const dbPromise = Mentor.find();
-      const apiPromise = chai.request(app).get('/mentors');
+      const apiPromise = chai.request(app).get('/mentors')
+        .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN );
 
       return Promise.all([dbPromise, apiPromise])
         .then(([data, res]) => {
@@ -40,6 +43,7 @@ describe('TATickets - /mentors', function () {
       let body;
       return chai.request(app)
         .post('/mentors')
+        .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN )
         .send(newItem)
         .then(function (res) {
           body = res.body;
@@ -69,6 +73,7 @@ describe('TATickets - /mentors', function () {
       return Mentor.findOne().then(function(mentor) {
         return chai.request(app)
           .put('/mentors/' + mentor._id)
+          .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN )
           .send(newItem);
       })
         .then(function (res) {
@@ -90,6 +95,7 @@ describe('TATickets - /mentors', function () {
       return Mentor.findOne().then(function(mentor) {
         return chai.request(app)
           .put('/mentors/' + mentor._id)
+          .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN )
           .send(newItem);
       })
         .then(function (res) {
