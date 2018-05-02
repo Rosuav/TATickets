@@ -18,7 +18,6 @@ chai.use(chaiHttp);
 describe('TATickets - /next', function() {
   let postStub;
 
-
   before(function() {
     postStub = sinon.stub(axios, 'post');
   });
@@ -32,10 +31,11 @@ describe('TATickets - /next', function() {
   });
 
   describe('POST /next', function() {
-    it('should reject unathorized requests', function() {
+    it('should reject unauthorized requests', function() {
       return chai.request(app).post('/next').send({
         channel_id: 'G9AJF01BL',
-        user_name: 'mentor3',
+        user_id: 'UMENTOR3',
+        user_name: 'Mentor3',
         response_url: 'http://localhost:8080/test',
         token: 'actualtoken!!!'
       })
@@ -52,7 +52,8 @@ describe('TATickets - /next', function() {
         mentor = _mentor;
         slackRequest = {
           channel_id: 'G9AJF01BL',
-          user_name: mentor.slackUsername,
+          user_id: mentor.slackUserId,
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           token: SLACK_VERIFICATION_TOKEN
         };
@@ -67,7 +68,7 @@ describe('TATickets - /next', function() {
         expect(body).to.include.keys('response_type', 'attachments');
         expect(body.response_type).to.equal('ephemeral');
         expect(attachment).to.include.keys('fallback', 'title', 'text', 'fields');
-        expect(attachment.fallback).to.equal('<@test8> issued: It does not work... In https://sessions.thinkful.com/test8 ');
+        expect(attachment.fallback).to.equal('<@UTEST8> issued: It does not work... In https://sessions.thinkful.com/test8 ');
         // TODO: write assertions that match new format
         // expect(attachment.pretext).to.equal('Ticket from <@test8>');
         // expect(attachment.text).to.equal('It does not work...')
@@ -79,7 +80,7 @@ describe('TATickets - /next', function() {
         expect(postStub.firstCall.args[1]).to.be.an('object');
         expect(postStub.firstCall.args[1].response_type).to.equal('in_channel');
         expect(postStub.firstCall.args[1].text).to.equal(
-          `<@${mentor.slackUsername}> incoming <@${'test8'}>`
+          `<@${mentor.slackUserId}> incoming <@UTEST8>`
         );
       });
     });
@@ -90,7 +91,8 @@ describe('TATickets - /next', function() {
         mentor = _mentor;
         slackRequest = {
           channel_id: 'G9AJF01BL',
-          user_name: mentor.slackUsername,
+          user_id: mentor.slackUserId,
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           text: 'silent',
           token: SLACK_VERIFICATION_TOKEN
@@ -114,7 +116,8 @@ describe('TATickets - /next', function() {
       }).then(mentor => {
         const slackRequest = {
           channel_id: 'G9AJF01BL',
-          user_name: mentor.slackUsername,
+          user_id: mentor.slackUserId,
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           token: SLACK_VERIFICATION_TOKEN
         };
@@ -133,7 +136,8 @@ describe('TATickets - /next', function() {
       return Mentor.findOne().then(mentor => {
         const slackRequest = {
           channel_id: 'G9AJF01BL',
-          user_name: 'student1000',
+          user_id: 'US1000',
+          user_name: 'Mentor3',
           response_url: 'http://localhost:8080/test',
           token: SLACK_VERIFICATION_TOKEN
         };

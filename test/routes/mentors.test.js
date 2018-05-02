@@ -5,6 +5,8 @@ const chaiHttp = require('chai-http');
 
 const { Mentor } = require('../../models');
 
+const { SLACK_VERIFICATION_TOKEN } = require('../../config');
+
 const expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -13,7 +15,8 @@ describe('TATickets - /mentors', function () {
   describe('GET /mentors', function () {
     it('should return the correct number of mentors', function () {
       const dbPromise = Mentor.find();
-      const apiPromise = chai.request(app).get('/mentors');
+      const apiPromise = chai.request(app).get('/mentors')
+        .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN );
 
       return Promise.all([dbPromise, apiPromise])
         .then(([data, res]) => {
@@ -23,7 +26,7 @@ describe('TATickets - /mentors', function () {
           expect(res.body).to.have.length(data.length);
           res.body.forEach(item => {
             expect(item).to.be.a('object');
-            expect(item).to.include.keys('name','isActive','email','slackUsername');
+            expect(item).to.include.keys('name','isActive','email','slackUsername', 'slackUserId');
           });
         });
     });
@@ -35,25 +38,73 @@ describe('TATickets - /mentors', function () {
         firstName: 'Mentor',
         lastName: 'Test',
         email: 'mentortest@mail.com',
-        username: 'mentortest'
+        slackUserId: 'UMENTORTEST'
       };
       let body;
       return chai.request(app)
         .post('/mentors')
+        .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN )
         .send(newItem)
         .then(function (res) {
           body = res.body;
           expect(res).to.have.status(201);
           expect(res).to.be.json;
           expect(body).to.be.a('object');
-          expect(body).to.include.keys('name', 'email', 'slackUsername', 'isActive');
+          expect(body).to.include.keys('name', 'email', 'slackUserId', 'isActive');
           return Mentor.findById(body._id);
         })
         .then(data => {
           expect(body.name.firstName).to.equal(data.name.firstName);
           expect(body.email).to.equal(data.email);
-          expect(body.slackUsername).to.equal(data.slackUsername);
+          expect(body.slackUserId).to.equal(data.slackUserId);
           expect(body.isActive).to.equal(data.isActive);
+        });
+    });
+  });
+  describe('PUT /mentors', function () {
+    it('should update a mentor', function () {
+      const newItem = {
+        firstName: 'Mentor',
+        lastName: 'Test',
+        email: 'mentortest@mail.com',
+        slackUserId: 'UMENTORTEST'
+      };
+      let body;
+      return Mentor.findOne().then(function(mentor) {
+        return chai.request(app)
+          .put('/mentors/' + mentor._id)
+          .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN )
+          .send(newItem);
+      })
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('name', 'email', 'slackUserId', 'isActive');
+          expect(body.name.firstName).to.equal(newItem.firstName);
+          expect(body.email).to.equal(newItem.email);
+          expect(body.slackUserId).to.equal(newItem.slackUserId);
+        });
+    });
+    it('should update a mentor\'s slackUserId', function () {
+      const newItem = {
+        slackUserId: 'UMENTORTEST'
+      };
+      let body;
+      return Mentor.findOne().then(function(mentor) {
+        return chai.request(app)
+          .put('/mentors/' + mentor._id)
+          .set('Authorization', 'Basic ' + SLACK_VERIFICATION_TOKEN )
+          .send(newItem);
+      })
+        .then(function (res) {
+          body = res.body;
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(body).to.be.a('object');
+          expect(body).to.include.keys('name', 'email', 'slackUserId', 'isActive');
+          expect(body.slackUserId).to.equal(newItem.slackUserId);
         });
     });
   });

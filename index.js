@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 const { PORT, DATABASE_URL } = require('./config');
 const { Mentor, Ticket } = require('./models');
-const { vertificationTokenAuth } = require('./helpers');
+const { vertificationTokenAuth, validateSlackRequest } = require('./helpers');
 
 const mentors = require('./routes/mentors');
 const { next, notifications, queue, reviews, summary, support, help } = require('./routes/commands');
@@ -17,17 +17,20 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Auth
+app.use(vertificationTokenAuth);
+
 // RESTful Routes
 app.use('/mentors', mentors);
 
 // Slack POST Routes
-app.use(vertificationTokenAuth);
+app.use(validateSlackRequest);
 app.use('/support', support);
 app.use('/next', next);
 app.use('/notifications', notifications);
 app.use('/queue', queue);
-app.use('/reviews', reviews);
-app.use('/summary', summary);
+// app.use('/reviews', reviews);
+// app.use('/summary', summary);
 app.use('/help', help);
 
 app.use((err, req, res, next) => {

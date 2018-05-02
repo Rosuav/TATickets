@@ -10,6 +10,9 @@ const mentorSchema = mongoose.Schema({
     required: true
   },
   slackUsername: {
+    type: String
+  },
+  slackUserId: {
     type: String,
     required: true,
     unique: true
