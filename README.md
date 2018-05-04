@@ -63,9 +63,9 @@ If you are a registered mentor, you can sign up for notifications for the specif
 * Without arguments, get a link to this readme!
 * Get your slack [username](https://api.slack.com/changelog/2017-09-the-one-about-usernames) and id, or the channel id
 
-      > `/ticket-help username`
+    > `/ticket-help username`
 
-      > `/ticket-help channel`
+    > `/ticket-help channel`
 
 
 ## Development
